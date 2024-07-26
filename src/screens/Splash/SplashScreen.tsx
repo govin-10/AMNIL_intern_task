@@ -5,6 +5,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {COLOR} from '../../constants';
 
 const SplashScreen: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLOR.PRIMARY_BACKGROUND,
   },
   imageLogo: {
     height: hp(40),
