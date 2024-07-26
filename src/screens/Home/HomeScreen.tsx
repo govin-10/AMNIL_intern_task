@@ -4,6 +4,8 @@ import {AppDispatch} from '../../redux/store';
 import {useDispatch} from 'react-redux';
 import {logout} from '../../redux/features/auth/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {HeaderComponent} from '../../components';
+import {COLOR} from '../../constants';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
@@ -14,9 +16,11 @@ const HomeScreen = ({navigation}: any) => {
     await AsyncStorage.removeItem('refreshToken');
   };
 
+  const {homeContainer} = styles;
+
   return (
-    <View>
-      <Text>HomeScreen</Text>
+    <View style={homeContainer}>
+      <HeaderComponent navigation={navigation} />
       <TouchableOpacity onPress={() => navigation.navigate('Details')}>
         <Text>Go to details</Text>
       </TouchableOpacity>
@@ -29,4 +33,10 @@ const HomeScreen = ({navigation}: any) => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  homeContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    backgroundColor: COLOR.PRIMARY_BACKGROUND,
+  },
+});

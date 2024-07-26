@@ -101,5 +101,6 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: COLOR.INPUT_BACKGROUND,
     padding: wp(3.5),
+    color: COLOR.PRIMARY_TEXT,
   },
 });

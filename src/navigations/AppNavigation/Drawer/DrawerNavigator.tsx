@@ -10,6 +10,7 @@ const DrawerNavigator: React.FC = () => {
     <DrawerNav.Navigator
       screenOptions={{
         headerShown: false,
+        drawerPosition: 'right',
       }}>
       <DrawerNav.Screen name="BottomTab" component={BottomTabNavigator} />
       <DrawerNav.Screen name="Todos" component={ToDoScreen} />
