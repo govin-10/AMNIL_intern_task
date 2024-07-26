@@ -4,8 +4,12 @@ import {AppDispatch} from '../../redux/store';
 import {useDispatch} from 'react-redux';
 import {logout} from '../../redux/features/auth/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {HeaderComponent} from '../../components';
+import {Banner, HeaderComponent} from '../../components';
 import {COLOR} from '../../constants';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
@@ -21,6 +25,9 @@ const HomeScreen = ({navigation}: any) => {
   return (
     <View style={homeContainer}>
       <HeaderComponent navigation={navigation} />
+      <View style={styles.bannerContainer}>
+        <Banner />
+      </View>
       <TouchableOpacity onPress={() => navigation.navigate('Details')}>
         <Text>Go to details</Text>
       </TouchableOpacity>
@@ -38,5 +45,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     backgroundColor: COLOR.PRIMARY_BACKGROUND,
+  },
+  bannerContainer: {
+    width: wp(100),
+    height: hp(25),
   },
 });

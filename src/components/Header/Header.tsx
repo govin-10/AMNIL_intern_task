@@ -25,7 +25,7 @@ const Header: React.FC<IHeaderProps> = ({navigation}) => {
   return (
     <View style={headerContainer}>
       {/* <View style={logoContainer}> */}
-      <Image source={IMAGE_PATH.logo} style={logo} />
+      <Image source={IMAGE_PATH.icon} style={logo} />
       {/* </View> */}
 
       <Text style={name}>Amnilite</Text>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   name: {
     color: COLOR.PRIMARY_TEXT,
-    fontSize: wp(7),
+    fontSize: wp(6),
   },
   accountIcon: {
     paddingRight: wp(3),
