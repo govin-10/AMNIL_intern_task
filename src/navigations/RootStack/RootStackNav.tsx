@@ -6,7 +6,7 @@ import {SplashScreen} from '../../screens';
 import AuthStackNavigator from '../AuthNavigation/AuthNavigator';
 import AppNav from '../AppNavigation/AppNav';
 
-const RootStackNav = () => {
+const RootStackNav: React.FC = () => {
   const {token, status} = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 

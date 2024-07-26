@@ -17,7 +17,6 @@ import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
 import {login} from '../../redux/features/auth/authSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const [userName, setUserName] = React.useState<string>('');
