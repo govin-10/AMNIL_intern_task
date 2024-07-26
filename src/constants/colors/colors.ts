@@ -1,10 +1,16 @@
 export const colors = {
   PRIMARY_BACKGROUND: '#F8F9FA',
+  CARD_BACKGROUND: '#FFFFFF',
   DRAWER_BACKGROUND: '#343A40',
   PRIMARY_TEXT: '#343A40',
   SECONDARY_TEXT: '#6C757D',
   PRIMARY_BUTTON_BG: '#007BFF',
   PRIMARY_BUTTON_TEXT: '#FFFFFF',
+
+  INPUT_BACKGROUND: '#EEEEEE',
+  INPUT_BORDER: '#CED4DA',
+  INPUT_TEXT: '#343A40',
+  PLACEHOLDER_TEXT: '#6C757D',
 };
 
 // Color Palette
@@ -16,12 +22,7 @@ export const colors = {
 // Dark Background: Dark Gray (#343A40)
 // Light Gray: Light Gray (#F8F9FA)
 // Medium Gray: Gray (#6C757D)
-// Color Usage
-// Background:
 
-// Main Background: Light Gray (#F8F9FA)
-// Card Backgrounds: White (#FFFFFF)
-// Drawer Background: Dark Gray (#343A40)
 // Text:
 
 // Primary Text: Dark Gray (#343A40)
@@ -48,6 +49,7 @@ export const colors = {
 // Background: White (#FFFFFF)
 // Active Tab/Item: Blue (#007BFF)
 // Inactive Tab/Item: Medium Gray (#6C757D)
+
 // Drawer Content:
 
 // Background: Dark Gray (#343A40)
@@ -57,10 +59,7 @@ export const colors = {
 // Drawer Item Active: Yellow (#FFC107)
 // Forms and Input Fields:
 
-// Input Background: White (#FFFFFF)
-// Input Border: Light Gray (#CED4DA)
-// Input Text: Dark Gray (#343A40)
-// Placeholder Text: Medium Gray (#6C757D)
+//
 // Alerts and Messages:
 
 // Success Message:
