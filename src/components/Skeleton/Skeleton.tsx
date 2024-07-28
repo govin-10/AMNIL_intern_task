@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
@@ -15,18 +15,20 @@ const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 const Skeleton = ({screenType}: SkeletonProps) => {
   const {
-    skeletonContainer,
+    accountSkeletonContainer,
     imageSection,
     userInfoSection,
     nameSection,
     userInfo,
     innerContent,
+
+    searchSkeletonContainer,
   } = styles;
 
   switch (screenType) {
     case 'account':
       return (
-        <View style={skeletonContainer}>
+        <View style={accountSkeletonContainer}>
           <ShimmerPlaceholder style={imageSection}></ShimmerPlaceholder>
           <ShimmerPlaceholder style={nameSection}></ShimmerPlaceholder>
           <View style={userInfoSection}>
@@ -39,24 +41,37 @@ const Skeleton = ({screenType}: SkeletonProps) => {
             <ShimmerPlaceholder style={userInfo}>
               <ShimmerPlaceholder style={innerContent} />
             </ShimmerPlaceholder>
-            {/* <ShimmerPlaceholder style={phone} /> */}
-            {/* <ShimmerPlaceholder style={email} /> */}
           </View>
-          {/* <View style={imageSection}></View> */}
+        </View>
+      );
+
+    case 'searchLoader':
+      const renderItem = () => (
+        <View style={styles.searchItem}>
+          <ShimmerPlaceholder style={styles.searchItemImage} />
+          <View style={styles.searchItemTextContainer}>
+            <ShimmerPlaceholder style={styles.searchItemText} />
+            <ShimmerPlaceholder style={styles.searchItemText} />
+          </View>
+        </View>
+      );
+
+      return (
+        <View style={styles.searchSkeletonContainer}>
+          <FlatList
+            data={[{}, {}, {}, {}, {}]} // Dummy data to render skeletons
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       );
   }
-  //   return (
-  //     <View>
-  //       <Text>Skeleton</Text>
-  //     </View>
-  //   )
 };
 
 export default Skeleton;
 
 const styles = StyleSheet.create({
-  skeletonContainer: {
+  accountSkeletonContainer: {
     flex: 1,
     width: '100%',
     // justifyContent: 'center',
@@ -86,5 +101,28 @@ const styles = StyleSheet.create({
   innerContent: {
     width: '100%',
     height: '100%',
+  },
+
+  searchSkeletonContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  searchItem: {
+    flexDirection: 'row',
+    gap: 10,
+    marginVertical: heightPercentageToDP(1),
+  },
+  searchItemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  searchItemTextContainer: {
+    flex: 1,
+  },
+  searchItemText: {
+    height: 20,
+    marginBottom: 5,
+    borderRadius: 4,
   },
 });

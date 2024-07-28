@@ -22,6 +22,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import {SkeletonLoader} from '../../components';
 
 const SearchScreen: React.FC = ({navigation}: any) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -43,8 +44,17 @@ const SearchScreen: React.FC = ({navigation}: any) => {
     }
   }, [debouncedSearchTerm, dispatch]);
 
-  const {searchContainer, searchBox, searchBar, itemContainer, itemImage} =
-    styles;
+  const {
+    searchContainer,
+    searchBox,
+    searchBar,
+    itemContainer,
+    itemLeft,
+    itemImage,
+    itemName,
+    itemPrice,
+    stockInfo,
+  } = styles;
 
   return (
     <View style={searchContainer}>
@@ -53,29 +63,68 @@ const SearchScreen: React.FC = ({navigation}: any) => {
         <TextInput style={searchBar} onChangeText={setSearchTerm} />
       </View>
 
-      {loading && <Text>Loading...</Text>}
-
-      {results.length > 0 ? (
+      {loading ? (
+        <SkeletonLoader screenType="searchLoader" />
+      ) : results.length > 0 ? (
         <FlatList
           data={results}
+          keyExtractor={item => item.id.toString()}
           renderItem={({item}) => {
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate('Details', {id: item.id})}>
                 <View style={itemContainer}>
-                  <Image source={{uri: item?.images[0]}} style={itemImage} />
-                  <View>
-                    <Text>{item?.title}</Text>
-                    <Text>Rs.{item.price}</Text>
+                  <View style={itemLeft}>
+                    <Image source={{uri: item?.images[0]}} style={itemImage} />
+                    <View>
+                      <Text style={itemName}>{item?.title}</Text>
+                      <Text style={itemPrice}>Rs.{item.price}</Text>
+                    </View>
                   </View>
-                  <Text>{item.availabilityStatus}</Text>
+                  <Text
+                    style={[
+                      stockInfo,
+                      {
+                        backgroundColor:
+                          item.availabilityStatus === 'In Stock'
+                            ? 'green'
+                            : item.availabilityStatus === 'Low Stock'
+                            ? 'orange'
+                            : 'red',
+                      },
+                    ]}>
+                    {item.availabilityStatus}
+                  </Text>
                 </View>
               </TouchableOpacity>
             );
           }}
         />
+      ) : !loading && searchTerm ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontSize: wp(7),
+              color: COLOR.PRIMARY_TEXT,
+              fontWeight: 'bold',
+            }}>
+            No search result found.
+          </Text>
+        </View>
       ) : (
-        !loading && <Text>No results found</Text>
+        !loading && (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              style={{
+                fontSize: wp(7),
+                color: COLOR.PRIMARY_TEXT,
+                fontWeight: 'bold',
+              }}>
+              Search to get started...
+            </Text>
+          </View>
+        )
       )}
     </View>
   );
@@ -107,10 +156,32 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     marginVertical: hp(1),
+    justifyContent: 'space-between',
     // alignItems: 'center',
+  },
+  itemLeft: {
+    flexDirection: 'row',
+    gap: 10,
   },
   itemImage: {
     height: 50,
     width: 50,
+    borderRadius: 25,
+  },
+  itemName: {
+    fontSize: wp(4),
+    fontWeight: 'bold',
+    color: COLOR.PRIMARY_TEXT,
+  },
+  itemPrice: {
+    fontSize: wp(3),
+    fontWeight: 'bold',
+    color: COLOR.PRIMARY_TEXT,
+  },
+  stockInfo: {
+    alignSelf: 'flex-start',
+    borderRadius: 5,
+    padding: 5,
+    color: 'white',
   },
 });
