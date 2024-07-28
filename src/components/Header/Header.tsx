@@ -20,19 +20,19 @@ interface IHeaderProps {
 }
 
 const Header: React.FC<IHeaderProps> = ({navigation}) => {
-  const {headerContainer, name, logo, accountIcon} = styles;
+  const {headerContainer, logoContainer, name, logo, accountIcon} = styles;
 
   return (
     <View style={headerContainer}>
-      {/* <View style={logoContainer}> */}
-      <Image source={IMAGE_PATH.icon} style={logo} />
-      {/* </View> */}
+      <View style={logoContainer}>
+        <Image source={IMAGE_PATH.icon} style={logo} />
+      </View>
 
       <Text style={name}>Amnilite</Text>
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
         <MaterialIcon
-          name="account"
-          size={wp(8)}
+          name="menu"
+          size={wp(6)}
           color="black"
           style={accountIcon}
         />
@@ -46,6 +46,7 @@ export default Header;
 const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
+    height: hp(6),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -53,14 +54,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(1),
     backgroundColor: COLOR.CARD_BACKGROUND,
   },
-
-  logo: {
+  logoContainer: {
+    height: 50,
     width: 50,
-    height: hp(8),
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
   name: {
     color: COLOR.PRIMARY_TEXT,
-    fontSize: wp(6),
+    fontSize: wp(5),
   },
   accountIcon: {
     paddingRight: wp(3),

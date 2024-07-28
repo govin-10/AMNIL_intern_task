@@ -8,6 +8,19 @@ export interface User {
   image: string;
   token: string;
   refreshToken: string;
+  address?: {
+    address: string;
+    city: string;
+    coordinates?: {
+      lat: string;
+      lng: string;
+    };
+    country: string;
+    postalCode: string;
+    state: string;
+    stateCode: string;
+  };
+  phone: string;
 }
 
 export interface AuthState {

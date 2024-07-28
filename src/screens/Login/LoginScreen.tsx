@@ -33,9 +33,9 @@ const LoginScreen = () => {
   const handlePress = async () => {
     console.log('button pressed');
 
-    const credential = {username: userName, password};
-    console.log(credential);
-    await dispatch(login(credential));
+    // const credential = {username: userName, password, expiresInMins: 1};
+    // console.log(credential);
+    await dispatch(login({username: userName, password}));
   };
 
   const {container, loginBox, inputBox, title, input} = styles;

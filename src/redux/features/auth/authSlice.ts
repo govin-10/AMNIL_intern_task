@@ -14,12 +14,17 @@ const initialState: AuthState = {
 interface loginCredential {
   username: string;
   password: string;
+  expiresInMins?: number;
 }
 
 export const login = createAsyncThunk(
   '/auth/login',
-  async (loginCredential: loginCredential) => {
-    const response = await api.post('/auth/login', loginCredential);
+  async ({username, password, expiresInMins}: loginCredential) => {
+    const response = await api.post('/auth/login', {
+      username,
+      password,
+      expiresInMins: 1,
+    });
     console.log(response.data);
     const {token, refreshToken} = response.data;
     await AsyncStorage.setItem('token', token);
@@ -34,6 +39,21 @@ export const checkToken = createAsyncThunk('/checkToken', async () => {
     return token;
   } else throw new Error('No token found');
 });
+
+export const fetchCurrentUser = createAsyncThunk(
+  'auth/fetchCurrentUser',
+  async (_, {rejectWithValue}) => {
+    try {
+      console.log('api calling...');
+      const response = await api.get('/auth/me');
+      console.log('rr', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.log('err', error);
+      return rejectWithValue(error.message);
+    }
+  },
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -74,6 +94,22 @@ const authSlice = createSlice({
         (state.token = action.payload), (state.status = 'succeeded');
       },
     );
+    builder.addCase(fetchCurrentUser.pending, state => {
+      state.status = 'loading';
+      state.error = null;
+    });
+    builder.addCase(
+      fetchCurrentUser.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.status = 'succeeded';
+        state.user = action.payload;
+      },
+    );
+    builder.addCase(fetchCurrentUser.rejected, (state, action) => {
+      console.log('failll');
+      state.status = 'failed';
+      state.error = action.payload as string;
+    });
   },
 });
 
