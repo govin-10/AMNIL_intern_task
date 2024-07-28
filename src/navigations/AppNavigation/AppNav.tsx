@@ -3,8 +3,9 @@ import React from 'react';
 import DrawerNavigator from './Drawer/DrawerNavigator';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DetailScreen} from '../../screens';
+import {AppStackParamList} from '../../types';
 
-const AppStack = createStackNavigator();
+const AppStack = createStackNavigator<AppStackParamList>();
 
 const AppNav = () => {
   return (

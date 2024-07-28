@@ -4,3 +4,8 @@ export type BottomTabParamList = {
   Cart: undefined;
   Profile: {id: number};
 };
+
+export type AppStackParamList = {
+  Drawer: undefined;
+  Details: {id: number};
+};
