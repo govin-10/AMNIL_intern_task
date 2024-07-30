@@ -3,7 +3,7 @@ import {api} from '../../../utils';
 import {ProductType} from '../../../types';
 
 interface ProductDetailState {
-  product: ProductType | null;
+  product: ProductType[] | null;
   loading: boolean;
   error: string | null;
 }

@@ -7,3 +7,5 @@ export {default as SearchScreen} from './Search/SearchScreen';
 export {default as SplashScreen} from './Splash/SplashScreen';
 export {default as ToDoScreen} from './ToDos/ToDoScreen';
 export {default as DetailScreen} from './Details/DetailScreen';
+export {default as FeedScreen} from './Post/FeedPost';
+export {default as MyPostScreen} from './Post/MyPost';

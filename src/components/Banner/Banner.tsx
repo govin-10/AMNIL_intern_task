@@ -3,11 +3,10 @@ import {
   Image,
   ImageSourcePropType,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import React from 'react';
-import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
+import {banners_image} from '../../utils/ImagePaths/ImagePaths';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -26,15 +25,13 @@ const Slider: React.FC<ISliderProps> = ({image}) => {
 };
 
 const Banner: React.FC = () => {
-  const banners = [IMAGE_PATH.banner1, IMAGE_PATH.banner2, IMAGE_PATH.banner3];
   return (
-    <View style={styles.flatListContainer}>
+    <View style={styles.bannerContainer}>
       <FlatList
-        data={banners}
-        renderItem={({item}) => {
-          return <Slider image={item} />;
-        }}
+        data={banners_image}
         horizontal
+        keyExtractor={(_, index) => `images${index}`}
+        renderItem={({item}) => <Slider image={item} />}
         pagingEnabled
       />
     </View>
@@ -44,18 +41,19 @@ const Banner: React.FC = () => {
 export default Banner;
 
 const styles = StyleSheet.create({
-  flatListContainer: {
-    width: '100%',
-
-    alignItems: 'center',
-    backgroundColor: 'blue',
+  bannerContainer: {
+    width: wp(100),
+    height: hp(25),
   },
   imageContainer: {
-    padding: wp(2),
-    alignItems: 'center',
+    flex: 1,
+    width: wp(100),
+    height: hp(25),
+    padding: 5,
   },
   image: {
-    width: wp(100),
+    width: '100%',
     height: '100%',
+    resizeMode: 'cover', // Adjust the image resize mode if needed
   },
 });

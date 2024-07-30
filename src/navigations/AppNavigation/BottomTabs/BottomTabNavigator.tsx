@@ -20,7 +20,6 @@ const BottomTabNavigator: React.FC = () => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-
         tabBarStyle: styles.tabStyle,
       }}>
       <BottomTabNav.Screen

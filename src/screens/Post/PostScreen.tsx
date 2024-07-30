@@ -1,10 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import TopTabBar from '../../navigations/AppNavigation/TopTab/TopTabNav';
 
 const PostScreen = () => {
   return (
-    <View>
+    <View style={{flex: 1}}>
       <Text>PostScreen</Text>
+      <TopTabBar />
     </View>
   );
 };
