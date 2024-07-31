@@ -1,30 +1,34 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
-import {checkToken} from '../../redux/features/auth/authSlice';
+import {
+  checkToken,
+  fetchCurrentUser,
+} from '../../redux/features/auth/authSlice';
 import {SplashScreen} from '../../screens';
 import AuthStackNavigator from '../AuthNavigation/AuthNavigator';
 import AppNav from '../AppNavigation/AppNav';
 
 const RootStackNav: React.FC = () => {
-  const {token, status} = useSelector((state: RootState) => state.auth);
-  const dispatch: AppDispatch = useDispatch();
-
+  /*suru ma app load hunchha, cart ra current user lai set garera ani appload false rakhne, 
+  cart ra user info chai throughout the app chaine vayera aile nai load gareko*/
   const [appLoading, setAppLoading] = useState<boolean>(true);
 
+  const {token} = useSelector((state: RootState) => state.auth);
+
+  const dispatch: AppDispatch = useDispatch();
+
+  //dispatching auth and cart info when the app loads.
   useEffect(() => {
-    setAppLoading(true);
-    setTimeout(async () => {
+    const appinitialize = async () => {
+      setAppLoading(true); //just making sure apploading is true always when the app reloads.
       await dispatch(checkToken());
+      await dispatch(fetchCurrentUser());
       setAppLoading(false);
-    }, 2000);
+    };
+
+    appinitialize();
   }, [dispatch]);
-
-  console.log('tt', token);
-
-  // if (status === 'loading') {
-  //   return <SplashScreen />;
-  // }
 
   if (appLoading) return <SplashScreen />;
 

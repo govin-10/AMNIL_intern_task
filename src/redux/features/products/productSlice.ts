@@ -3,13 +3,15 @@ import {api} from '../../../utils';
 import {ProductType} from '../../../types';
 
 interface ProductDetailState {
-  product: ProductType[] | null;
+  product: ProductType | null;
+  stock: number;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ProductDetailState = {
   product: null,
+  stock: 0,
   loading: false,
   error: null,
 };
@@ -18,10 +20,9 @@ export const fetchProductsById = createAsyncThunk(
   '/fetchProducts/id',
   async (id: number, {rejectWithValue}) => {
     try {
-      console.log('api hit...');
       const products = await api.get(`/products/${id}`);
-      console.log(products.data);
-      return products.data;
+
+      return {product: products.data, stock: products.data.stock};
     } catch (error) {
       console.log(error);
       //   return rejectWithValue(error)
@@ -33,15 +34,29 @@ const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    updateQuantity(state, action) {
+    increaseStock(state, action) {
       // state.product.
+      if (action.payload == 1) return;
+
+      state.stock += 1;
+    },
+    decreaseStock(state, action) {
+      if (action.payload >= 10) return;
+      state.stock -= 1;
+    },
+    resetProductState(state) {
+      state.product = null;
+      state.loading = false;
+      state.error = null;
     },
   },
   extraReducers: builder => {
     builder.addCase(
       fetchProductsById.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.product = action.payload;
+        const {product, stock} = action.payload;
+        state.product = product;
+        state.stock = stock;
         state.loading = false;
       },
     );
@@ -62,3 +77,5 @@ const productSlice = createSlice({
 });
 
 export default productSlice.reducer;
+export const {resetProductState, increaseStock, decreaseStock} =
+  productSlice.actions;
