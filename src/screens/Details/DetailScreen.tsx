@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {AppStackParamList} from '../../types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +13,8 @@ import {
 import IoniIcons from 'react-native-vector-icons/Ionicons';
 import {COLOR} from '../../constants';
 import {SkeletonLoader} from '../../components';
+import {addToCart, fetchCartById} from '../../redux/features/cart/cartSlice';
+import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
 
 type DetailScreenRouteProp = RouteProp<AppStackParamList, 'Details'>;
 
@@ -23,7 +25,11 @@ const DetailScreen = () => {
   const {product, loading, error} = useSelector(
     (state: RootState) => state.product,
   );
+  const {user} = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+
+  const [quantity, setQuantity] = useState<number>(1);
+  const [stockQuantity, setStockQuantity] = useState<number>(0);
 
   useEffect(() => {
     if (id) {
@@ -31,8 +37,15 @@ const DetailScreen = () => {
     }
   }, [dispatch, id]);
 
+  useEffect(() => {
+    if (product) {
+      setStockQuantity(product?.stock);
+    }
+  }, [product]);
+
   const goback = () => {
     console.log('go back pressed');
+    console.log(user);
   };
 
   const renderRating = (rating: number) => {
@@ -51,6 +64,30 @@ const DetailScreen = () => {
 
     return <View style={starContainer}>{stars}</View>;
   };
+
+  const increaseQuantity = () => {
+    setQuantity(prev => prev + 1);
+  };
+  const decreaseQuantity = () => {
+    if (quantity === 1) return;
+    return setQuantity(prev => prev - 1);
+  };
+
+  const handleAddToCart = (
+    userId: number,
+    productId: number,
+    quantity: number,
+  ) => {
+    const products = [
+      {
+        id: productId,
+        quantity,
+      },
+    ];
+    dispatch(addtoCart({userId, products}));
+  };
+
+  const maximumOrderQuantity: number = 10;
 
   const {
     detailContainer,
@@ -81,7 +118,7 @@ const DetailScreen = () => {
         <IoniIcons name="arrow-back" size={25} color={'black'} />
         {/* <Text>{'<'}</Text> */}
       </TouchableOpacity>
-      {loading ? (
+      {loading && stockQuantity === 0 ? (
         <SkeletonLoader screenType="detailLoader" />
       ) : (
         <View>
@@ -107,18 +144,24 @@ const DetailScreen = () => {
                     : 'red',
               },
             ]}>
-            Stock Quantity: {product?.stock}
+            Stock Quantity: {stockQuantity}
           </Text>
           <View style={cartContainer}>
             <View style={incDecContainer}>
-              <Text style={incdecButton}>-</Text>
-              <Text style={cartNum}>1</Text>
-              <Text style={incdecButton}>+</Text>
+              <TouchableOpacity onPress={decreaseQuantity}>
+                <Text style={incdecButton}>-</Text>
+              </TouchableOpacity>
+              <Text style={cartNum}>{quantity}</Text>
+              <TouchableOpacity onPress={increaseQuantity}>
+                <Text style={incdecButton}>+</Text>
+              </TouchableOpacity>
             </View>
-            <View style={addCartButton}>
+            <TouchableOpacity
+              style={addCartButton}
+              onPress={() => dispatch(addToCart({product, quantity}))}>
               <IoniIcons name="cart" size={30} color={'black'} />
               <Text style={addCartText}>Add to Cart</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={specificationContainer}>
             <Text style={specHeader}>Specifications</Text>

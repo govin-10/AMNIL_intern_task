@@ -2,7 +2,7 @@ import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {logout} from '../../redux/features/auth/authSlice';
+import {fetchCurrentUser, logout} from '../../redux/features/auth/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Banner, HeaderComponent} from '../../components';
 import {COLOR} from '../../constants';
@@ -11,10 +11,12 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {fetchProductsByCategory} from '../../redux/features/products/categorySlice';
+import {fetchCartById} from '../../redux/features/cart/cartSlice';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
 
+  const {user} = useSelector((state: RootState) => state.auth);
   // const handleLogout = async () => {
   //   dispatch(logout());
   //   await AsyncStorage.removeItem('token');
@@ -25,6 +27,14 @@ const HomeScreen = ({navigation}: any) => {
     categories.forEach(category => {
       dispatch(fetchProductsByCategory(category));
     });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+
+    if (user) {
+      dispatch(fetchCartById(user.id));
+    }
   }, [dispatch]);
 
   const {product, loading, error} = useSelector(

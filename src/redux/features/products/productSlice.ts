@@ -32,7 +32,11 @@ export const fetchProductsById = createAsyncThunk(
 const productSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {},
+  reducers: {
+    updateQuantity(state, action) {
+      // state.product.
+    },
+  },
   extraReducers: builder => {
     builder.addCase(
       fetchProductsById.fulfilled,
