@@ -1,43 +1,34 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {api} from '../../../utils';
 import {filterData} from '../../../utils/cartDataFilter/cartDataFilter';
+import axios from 'axios';
 
 interface cartState {
   cart: any[];
   cartTotalPrice: number;
-  loading: boolean;
-  error: string | null;
+  cartLoading: boolean;
+  cartError: string | null;
 }
 
-export const fetchCartById = createAsyncThunk(
-  '/fetchCartById',
-  async (id: number, {rejectWithValue}) => {
-    try {
-      const cartsData = await api.get(`/carts/users/${id}`);
-      return {
-        cartProducts: cartsData.data.carts.products,
-        cartTotal: cartsData.data.carts.total,
-      };
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
-
-// export const addtoCart = createAsyncThunk(
-//   '/addtoCart',
-//   async ({userId, products}: cartItems, {rejectWithValue}) => {
+// export const fetchCartById = createAsyncThunk(
+//   '/fetchCartById',
+//   async (id: number, {rejectWithValue}) => {
 //     try {
-//       const cartsData = await api.post(`/carts/add`, {userId, products});
-//       console.log(cartsData.data);
-
-//       return {
-//         cartProducts: cartsData.data.products,
-//         cartTotal: cartsData.data.total,
-//       };
-//       // return cartsData.data.carts;
+//       const cartsData = await api.get(`/carts/user/${id}`);
+//       if (cartsData.data.carts.products) {
+//         return {
+//           cartProducts: cartsData.data.carts.products,
+//           cartTotal: cartsData.data.carts.total,
+//         };
+//       } else return;
 //     } catch (error) {
-//       return rejectWithValue(error);
+//       if (axios.isAxiosError(error)) {
+//         return rejectWithValue({
+//           message: error.message,
+//           status: error.response?.status || 'Unknown status',
+//         });
+//       }
+//       return rejectWithValue({message: 'An unknown error occurred'});
 //     }
 //   },
 // );
@@ -45,8 +36,8 @@ export const fetchCartById = createAsyncThunk(
 const initialState: cartState = {
   cart: [],
   cartTotalPrice: 0,
-  loading: false,
-  error: null,
+  cartLoading: false,
+  cartError: null,
 };
 
 const cartSlice = createSlice({
@@ -54,12 +45,9 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action) {
-      console.log(action.payload);
       const {product, quantity} = action.payload;
-      // const {id, title, price, }
-      const cartData = filterData(product, quantity);
 
-      console.log(cartData);
+      const cartData = filterData(product, quantity);
 
       const cartItem = state.cart.find(item => item?.id === cartData.id);
 
@@ -68,45 +56,60 @@ const cartSlice = createSlice({
         cartItem.quantity += cartData.quantity;
         cartItem.total += cartData.total;
         cartItem.discountedTotal += cartData.discountedTotal;
-        state.cartTotalPrice = state.cartTotalPrice - oldtotal + cartItem.total;
+        state.cartTotalPrice =
+          state.cartTotalPrice - oldtotal + cartItem.discountedTotal;
       } else {
-        state.cart = [...state.cart, cartData];
-        state.cartTotalPrice += cartData.total;
+        state.cart.push(cartData);
+        state.cartTotalPrice += cartData.discountedTotal;
       }
-
-      console.log('cartItems', state.cart);
-      console.log('cartTotalPrice', state.cartTotalPrice);
+    },
+    increaseCart(state, action) {
+      // console.log(action.payload);
+      const {id, stock, quantity} = action.payload;
+      const cartItem = state.cart.find(item => item.id === id);
+      cartItem.stock -= 1;
+      cartItem.quantity += 1;
+    },
+    decreaseCart(state, action) {
+      // console.log(action.payload);
+      const {id, stock, quantity} = action.payload;
+      const cartItem = state.cart.find(item => item.id === id);
+      if (cartItem.quantity === 1) return;
+      cartItem.stock += 1;
+      cartItem.quantity -= 1;
     },
   },
-  extraReducers: builder => {
-    builder.addCase(fetchCartById.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchCartById.fulfilled, (state, action) => {
-      const {cartProducts, cartTotal} = action.payload;
-      state.cart = cartProducts;
-      state.cartTotalPrice = cartTotal;
-      state.loading = false;
-    });
-    builder.addCase(fetchCartById.rejected, (state, action) => {
-      state.error = action.payload as string;
-      state.loading = false;
-    });
-    // builder.addCase(addtoCart.pending, (state, action) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(addtoCart.fulfilled, (state, action) => {
-    //   const {cartProducts, cartTotal} = action.payload;
-    //   state.cart = cartProducts;
-    //   state.cartTotalPrice = cartTotal;
-    //   state.loading = false;
-    // });
-    // builder.addCase(addtoCart.rejected, (state, action) => {
-    //   state.error = action.payload as string;
-    //   state.loading = false;
-    // });
-  },
+  // extraReducers: builder => {
+  //   builder.addCase(fetchCartById.pending, (state, action) => {
+  //     state.cartLoading = true;
+  //   });
+  //   builder.addCase(fetchCartById.fulfilled, (state, action) => {
+  //     if (action.payload) {
+  //       const {cartProducts, cartTotal} = action.payload;
+  //       state.cart = cartProducts;
+  //       state.cartTotalPrice = cartTotal;
+  //       state.cartLoading = false;
+  //     }
+  //   });
+  //   builder.addCase(fetchCartById.rejected, (state, action) => {
+  //     state.cartError = action.payload as string;
+  //     state.cartLoading = false;
+  //   });
+  //   // builder.addCase(addtoCart.pending, (state, action) => {
+  //   //   state.loading = true;
+  //   // });
+  //   // builder.addCase(addtoCart.fulfilled, (state, action) => {
+  //   //   const {cartProducts, cartTotal} = action.payload;
+  //   //   state.cart = cartProducts;
+  //   //   state.cartTotalPrice = cartTotal;
+  //   //   state.loading = false;
+  //   // });
+  //   // builder.addCase(addtoCart.rejected, (state, action) => {
+  //   //   state.error = action.payload as string;
+  //   //   state.loading = false;
+  //   // });
+  // },
 });
 
 export default cartSlice.reducer;
-export const {addToCart} = cartSlice.actions;
+export const {addToCart, increaseCart, decreaseCart} = cartSlice.actions;

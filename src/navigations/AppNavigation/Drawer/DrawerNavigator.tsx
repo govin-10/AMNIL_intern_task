@@ -13,6 +13,7 @@ const DrawerNavigator: React.FC = () => {
       screenOptions={{
         headerShown: false,
         drawerPosition: 'right',
+        swipeEnabled: false,
       }}>
       <DrawerNav.Screen
         name="BottomTab"

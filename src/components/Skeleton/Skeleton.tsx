@@ -147,6 +147,25 @@ const Skeleton = ({screenType}: SkeletonProps) => {
           />
         </View>
       );
+
+    case 'category':
+      return (
+        <View>
+          <FlatList
+            data={[{}, {}, {}, {}]}
+            renderItem={() => (
+              <ShimmerPlaceholder
+                style={{
+                  width: widthPercentageToDP(20),
+                  height: heightPercentageToDP(15),
+                  marginHorizontal: widthPercentageToDP(3),
+                }}></ShimmerPlaceholder>
+            )}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+          />
+        </View>
+      );
   }
 };
 

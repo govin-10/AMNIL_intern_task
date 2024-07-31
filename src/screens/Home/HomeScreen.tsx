@@ -1,27 +1,31 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchCurrentUser, logout} from '../../redux/features/auth/authSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Banner, HeaderComponent} from '../../components';
+import {Banner, HeaderComponent, SkeletonLoader} from '../../components';
 import {COLOR} from '../../constants';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {fetchProductsByCategory} from '../../redux/features/products/categorySlice';
-import {fetchCartById} from '../../redux/features/cart/cartSlice';
+import {ProductType} from '../../types';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 
-const HomeScreen = ({navigation}: any) => {
+const HomeScreen: React.FC = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
-
   const {user} = useSelector((state: RootState) => state.auth);
-  // const handleLogout = async () => {
-  //   dispatch(logout());
-  //   await AsyncStorage.removeItem('token');
-  //   await AsyncStorage.removeItem('refreshToken');
-  // };
+  const {cartError} = useSelector((state: RootState) => state.cart);
+  const {product, categoryLoading, categoryError} = useSelector(
+    (state: RootState) => state.category,
+  );
 
   useEffect(() => {
     categories.forEach(category => {
@@ -29,59 +33,54 @@ const HomeScreen = ({navigation}: any) => {
     });
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchCurrentUser());
+  const categories = ['smartphones', 'vehicle', 'groceries'];
 
-    if (user) {
-      dispatch(fetchCartById(user.id));
-    }
-  }, [dispatch]);
-
-  const {product, loading, error} = useSelector(
-    (state: RootState) => state.category,
+  //individual category item
+  const renderCategory = ({item}: {item: ProductType}) => (
+    <TouchableOpacity
+      style={styles.productContainer}
+      onPress={() => navigation.navigate('Details', {id: item.id})}>
+      <View style={styles.imageContainer}>
+        <Image source={{uri: item.images[0]}} style={styles.productImage} />
+      </View>
+      <Text style={styles.itemTitle}>{item.title}</Text>
+    </TouchableOpacity>
   );
-  const categories = [
-    'smartphones',
-    'vehicle',
-    'groceries',
-    'beauty',
-    'furniture',
-  ];
-  categories.map(category => {
-    console.log(category, product[category]);
-    return;
-  });
 
-  const {homeContainer} = styles;
+  //category container: eg: smartphone section container
+  const renderCategorySection = (category: string) => {
+    const products: ProductType[] = product[category] || [];
 
+    return (
+      <View key={category} style={styles.categoryContainer}>
+        <Text style={styles.categoryTitle}>{category}</Text>
+        {categoryError ? (
+          <Text>Error loading products for {category}</Text>
+        ) : categoryLoading ? (
+          <SkeletonLoader screenType="category" />
+        ) : (
+          <FlatList
+            data={products}
+            renderItem={renderCategory}
+            keyExtractor={item => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            initialNumToRender={6}
+          />
+        )}
+      </View>
+    );
+  };
+
+  //rendering whole categories
   return (
-    <View style={homeContainer}>
+    <View style={styles.homeContainer}>
       <HeaderComponent navigation={navigation} />
-
-      <Banner />
-
-      {categories.map(category => {
-        return (
-          <View>
-            <Text>{category}</Text>
-
-            {product[category] && product[category].length > 0 ? (
-              product[category].map((product, index) => {
-                return (
-                  <FlatList
-                    data={[product]}
-                    renderItem={({item}) => <Text>{item.title}</Text>}
-                  />
-                  // <Text>{product.title}</Text>
-                  // </FlatList>
-                );
-              })
-            ) : (
-              <Text>No data</Text>
-            )}
-          </View>
-        );
-      })}
+      {cartError ? <>{console.log('Failed to fetch cart')}</> : null}
+      <ScrollView>
+        <Banner />
+        {categories.map(renderCategorySection)}
+      </ScrollView>
     </View>
   );
 };
@@ -94,4 +93,33 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLOR.PRIMARY_BACKGROUND,
   },
+  categoryContainer: {
+    marginBottom: heightPercentageToDP(1),
+    padding: widthPercentageToDP(2),
+  },
+  categoryTitle: {
+    color: COLOR.PRIMARY_TEXT,
+    textTransform: 'uppercase',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 8,
+  },
+  productContainer: {
+    width: widthPercentageToDP(25),
+    height: heightPercentageToDP(18),
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageContainer: {
+    width: '100%',
+    height: '75%',
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  itemTitle: {flex: 1, alignSelf: 'center', color: COLOR.PRIMARY_TEXT},
 });

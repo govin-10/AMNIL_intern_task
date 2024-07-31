@@ -1,93 +1,66 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {AppStackParamList} from '../../types';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
-import {fetchProductsById} from '../../redux/features/products/productSlice';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  decreaseStock,
+  fetchProductsById,
+  increaseStock,
+  resetProductState,
+} from '../../redux/features/products/productSlice';
+import IoniIcons from 'react-native-vector-icons/Ionicons';
+import {COLOR} from '../../constants';
+import {SkeletonLoader} from '../../components';
+import {addToCart} from '../../redux/features/cart/cartSlice';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import IoniIcons from 'react-native-vector-icons/Ionicons';
-import {COLOR} from '../../constants';
-import {SkeletonLoader} from '../../components';
-import {addToCart, fetchCartById} from '../../redux/features/cart/cartSlice';
-import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
+import {AppStackParamList} from '../../types';
 
 type DetailScreenRouteProp = RouteProp<AppStackParamList, 'Details'>;
 
-const DetailScreen = () => {
+const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
 
-  const {product, loading, error} = useSelector(
+  const {product, stock, loading} = useSelector(
     (state: RootState) => state.product,
   );
-  const {user} = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 
   const [quantity, setQuantity] = useState<number>(1);
-  const [stockQuantity, setStockQuantity] = useState<number>(0);
 
   useEffect(() => {
     if (id) {
+      dispatch(resetProductState()); // Reset product state before fetching new data, purano state lai clear garna
       dispatch(fetchProductsById(id));
     }
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (product) {
-      setStockQuantity(product?.stock);
-    }
-  }, [product]);
-
-  const goback = () => {
-    console.log('go back pressed');
-    console.log(user);
-  };
-
   const renderRating = (rating: number) => {
-    const stars = [];
-
-    for (let i = 0; i < 5; i++) {
-      console.log(rating);
-      console.log(Math.floor(rating));
-      stars.push(
-        <IoniIcons
-          name={i < Math.floor(rating) ? 'star' : 'star-outline'}
-          size={25}
-        />,
-      );
-    }
-
-    return <View style={starContainer}>{stars}</View>;
+    return (
+      <View style={styles.starContainer}>
+        {[...Array(5)].map((_, i) => (
+          <IoniIcons
+            key={i}
+            name={i < Math.floor(rating) ? 'star' : 'star-outline'}
+            size={25}
+          />
+        ))}
+      </View>
+    );
   };
 
   const increaseQuantity = () => {
-    setQuantity(prev => prev + 1);
+    setQuantity(prev => Math.min(prev + 1, 10));
+    dispatch(decreaseStock(quantity));
   };
   const decreaseQuantity = () => {
-    if (quantity === 1) return;
-    return setQuantity(prev => prev - 1);
+    setQuantity(prev => Math.max(prev - 1, 1));
+    dispatch(increaseStock(quantity));
   };
-
-  const handleAddToCart = (
-    userId: number,
-    productId: number,
-    quantity: number,
-  ) => {
-    const products = [
-      {
-        id: productId,
-        quantity,
-      },
-    ];
-    dispatch(addtoCart({userId, products}));
-  };
-
-  const maximumOrderQuantity: number = 10;
 
   const {
     detailContainer,
@@ -98,7 +71,6 @@ const DetailScreen = () => {
     description,
     price,
     ratingFavContainer,
-    starContainer,
     stockInfo,
     cartContainer,
     incDecContainer,
@@ -112,13 +84,13 @@ const DetailScreen = () => {
     specTitle,
     specValue,
   } = styles;
+
   return (
     <View style={detailContainer}>
-      <TouchableOpacity style={backIcon} onPress={goback}>
+      <TouchableOpacity style={backIcon}>
         <IoniIcons name="arrow-back" size={25} color={'black'} />
-        {/* <Text>{'<'}</Text> */}
       </TouchableOpacity>
-      {loading && stockQuantity === 0 ? (
+      {loading ? (
         <SkeletonLoader screenType="detailLoader" />
       ) : (
         <View>
@@ -127,9 +99,9 @@ const DetailScreen = () => {
           </View>
           <Text style={title}>{product?.title}</Text>
           <Text style={description}>{product?.description}</Text>
-          <Text style={price}>Rs.{product?.price}</Text>
+          <Text style={price}>${product?.price}</Text>
           <View style={ratingFavContainer}>
-            {renderRating(product?.rating)}
+            {renderRating(product?.rating ?? 0)}
             <IoniIcons name="heart-outline" size={25} color={'black'} />
           </View>
           <Text
@@ -144,7 +116,7 @@ const DetailScreen = () => {
                     : 'red',
               },
             ]}>
-            Stock Quantity: {stockQuantity}
+            Stock Quantity: {stock}
           </Text>
           <View style={cartContainer}>
             <View style={incDecContainer}>
@@ -159,7 +131,7 @@ const DetailScreen = () => {
             <TouchableOpacity
               style={addCartButton}
               onPress={() => dispatch(addToCart({product, quantity}))}>
-              <IoniIcons name="cart" size={30} color={'black'} />
+              <IoniIcons name="cart" size={30} color={'white'} />
               <Text style={addCartText}>Add to Cart</Text>
             </TouchableOpacity>
           </View>
@@ -198,9 +170,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: heightPercentageToDP(25),
-    // backgroundColor: 'red',
-    // borderRadius: widthPercentageToDP(2),
-    // borderWidth: 1,
     elevation: 2,
     marginBottom: heightPercentageToDP(1),
   },
@@ -259,7 +228,6 @@ const styles = StyleSheet.create({
   incdecButton: {
     backgroundColor: COLOR.INPUT_BACKGROUND,
     padding: widthPercentageToDP(3),
-    // paddingVertical: heightPercentageToDP(1),
     borderRadius: widthPercentageToDP(5),
     fontSize: widthPercentageToDP(5),
     fontWeight: 'bold',
@@ -289,11 +257,8 @@ const styles = StyleSheet.create({
   },
   specTitle: {
     color: COLOR.PRIMARY_TEXT,
-    // fontSize: widthPercentageToDP(4),
   },
   specValue: {
-    // fontSize: widthPercentageToDP(4),
-
     color: COLOR.SECONDARY_TEXT,
   },
 });

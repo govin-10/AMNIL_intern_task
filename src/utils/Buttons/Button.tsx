@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: COLOR.PRIMARY_BUTTON_TEXT,
-    fontSize: hp(2.5),
+    fontSize: hp(2.1),
     fontWeight: '600',
     textAlign: 'center',
   },

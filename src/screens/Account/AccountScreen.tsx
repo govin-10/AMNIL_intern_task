@@ -14,11 +14,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const AccountScreen = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
-  const {token, user, status} = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    dispatch(fetchCurrentUser());
-  }, [dispatch, token]);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   const {
     accountContainer,
@@ -35,43 +31,38 @@ const AccountScreen = ({navigation}: any) => {
       <View>
         <HeaderComponent navigation={navigation} />
       </View>
-      {status === 'loading' ? (
-        <SkeletonLoader screenType="account" />
-      ) : (
-        user && (
-          <View style={userContent}>
-            <Image source={{uri: user?.image}} style={image} />
-            <View style={nameSection}>
-              <Text style={name}>
-                {user?.firstName} {user?.lastName}
+      {user && (
+        <View style={userContent}>
+          <Image source={{uri: user?.image}} style={image} />
+          <View style={nameSection}>
+            <Text style={name}>
+              {user?.firstName} {user?.lastName}
+            </Text>
+            <MaterialIcon
+              name="logout"
+              size={25}
+              color={COLOR.PRIMARY_BUTTON_BG}
+            />
+          </View>
+          <View style={userInfo}>
+            <View style={userInfoBox}>
+              <MaterialIcon name="location-pin" size={25} color="red" />
+              <Text style={userInfoContent}>
+                {user?.address?.address} {user?.address?.city}{' '}
+                {user?.address?.state} {user?.address?.country}
               </Text>
-              <MaterialIcon
-                name="logout"
-                size={25}
-                color={COLOR.PRIMARY_BUTTON_BG}
-              />
             </View>
-            <View style={userInfo}>
-              <View style={userInfoBox}>
-                <MaterialIcon name="location-pin" size={25} color="red" />
-                <Text style={userInfoContent}>
-                  {user?.address?.address} {user?.address?.city}{' '}
-                  {user?.address?.state} {user?.address?.country}
-                </Text>
-              </View>
-              <View style={userInfoBox}>
-                <MaterialIcon name="email" size={25} color="grey" />
-                <Text style={userInfoContent}>{user?.email}</Text>
-              </View>
-              <View style={userInfoBox}>
-                <MaterialIcon name="phone" size={25} color="green" />
-                <Text style={userInfoContent}>{user?.phone}</Text>
-              </View>
+            <View style={userInfoBox}>
+              <MaterialIcon name="email" size={25} color="grey" />
+              <Text style={userInfoContent}>{user?.email}</Text>
+            </View>
+            <View style={userInfoBox}>
+              <MaterialIcon name="phone" size={25} color="green" />
+              <Text style={userInfoContent}>{user?.phone}</Text>
             </View>
           </View>
-        )
+        </View>
       )}
-
       {/* <Text>AccountScreen</Text> */}
     </View>
   );

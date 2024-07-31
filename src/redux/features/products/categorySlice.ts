@@ -1,17 +1,18 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {api} from '../../../utils';
 import {ProductType} from '../../../types';
+import axios from 'axios';
 
 interface productCategoryState {
   product: {[key: string]: ProductType[]};
-  loading: boolean;
-  error: string | null;
+  categoryLoading: boolean;
+  categoryError: string | null;
 }
 
 const initialState: productCategoryState = {
   product: {},
-  loading: false,
-  error: null,
+  categoryLoading: false,
+  categoryError: null,
 };
 
 export const fetchProductsByCategory = createAsyncThunk(
@@ -19,14 +20,19 @@ export const fetchProductsByCategory = createAsyncThunk(
   async (category: string, {rejectWithValue}) => {
     try {
       const productsByCategory = await api.get(
-        `/products/category/${category}`,
+        `/products/category/${category}?limit=10`,
       );
       const products = productsByCategory.data.products;
-      //   console.log('pp', products);
-      console.log(`${category}, products:${JSON.stringify(products)}`);
+
       return {category, products};
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue({
+          message: error.message,
+          status: error.response?.status || 'Unknown status',
+        });
+      }
+      return rejectWithValue({message: 'An unknown error occurred'});
     }
   },
 );
@@ -37,13 +43,13 @@ const categorySlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchProductsByCategory.pending, state => {
-      state.loading = true;
+      state.categoryLoading = true;
     });
     builder.addCase(
       fetchProductsByCategory.rejected,
       (state, action: PayloadAction<any>) => {
-        state.error = action.payload;
-        state.loading = false;
+        state.categoryError = action.payload;
+        state.categoryLoading = false;
       },
     );
     builder.addCase(
@@ -51,7 +57,7 @@ const categorySlice = createSlice({
       (state, action: PayloadAction<any>) => {
         const {category, products} = action.payload;
         state.product[category] = products;
-        state.loading = false;
+        state.categoryLoading = false;
       },
     );
   },
