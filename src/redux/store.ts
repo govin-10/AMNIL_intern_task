@@ -5,6 +5,7 @@ import productReducer from './features/products/productSlice';
 import categoryReducer from './features/products/categorySlice';
 import todoReducer from './features/todo/todoSlice';
 import mypostReducer, {feedpostReducer} from './features/post/postSlice';
+import userReducer from './features/user/userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     todo: todoReducer,
     mypost: mypostReducer,
     feedpost: feedpostReducer,
+    user: userReducer,
   },
 });
 

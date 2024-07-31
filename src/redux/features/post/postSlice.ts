@@ -13,19 +13,23 @@ export const getPostsById = createAsyncThunk(
   async (id: number, {rejectWithValue}) => {
     try {
       const postLists = await api.get(`/posts/user/${id}`);
-      console.log(postLists.data);
-    } catch (error) {}
+      return postLists.data.posts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   },
 );
 
 export const fetchFeedPosts = createAsyncThunk(
   '/feed',
-  async (skip: number) => {
+  async (skip: number, {rejectWithValue}) => {
     try {
       const currentPagePosts = await api.get(`/posts?limit=10&skip=${skip}`);
-      console.log(currentPagePosts.data);
+
       return currentPagePosts.data.posts;
-    } catch (error) {}
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   },
 );
 

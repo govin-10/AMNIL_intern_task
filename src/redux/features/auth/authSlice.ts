@@ -14,18 +14,16 @@ const initialState: AuthState = {
 interface loginCredential {
   username: string;
   password: string;
-  expiresInMins?: number;
 }
 
 export const login = createAsyncThunk(
   '/auth/login',
-  async ({username, password, expiresInMins}: loginCredential) => {
+  async ({username, password}: loginCredential) => {
     const response = await api.post('/auth/login', {
       username,
       password,
-      expiresInMins: 1,
     });
-    console.log(response.data);
+
     const {token, refreshToken} = response.data;
     await AsyncStorage.setItem('token', token);
     await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -44,9 +42,8 @@ export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
   async (_, {rejectWithValue}) => {
     try {
-      console.log('api calling...');
       const response = await api.get('/auth/me');
-      console.log('rr', response.data);
+
       return response.data;
     } catch (error: any) {
       console.log('err', error);

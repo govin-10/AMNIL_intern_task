@@ -101,6 +101,52 @@ const Skeleton = ({screenType}: SkeletonProps) => {
           </View>
         </View>
       );
+
+    case 'posts':
+      return (
+        <View>
+          <FlatList
+            data={[{}, {}, {}]}
+            renderItem={() => {
+              return (
+                <View>
+                  <View style={{flexDirection: 'row'}}>
+                    <ShimmerPlaceholder
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50,
+                      }}></ShimmerPlaceholder>
+                    <ShimmerPlaceholder
+                      style={{
+                        width: widthPercentageToDP(40),
+                        height: heightPercentageToDP(5),
+                      }}></ShimmerPlaceholder>
+                  </View>
+                  <ShimmerPlaceholder
+                    style={{
+                      width: '100%',
+                      height: heightPercentageToDP(5),
+                      marginVertical: heightPercentageToDP(3),
+                    }}></ShimmerPlaceholder>
+                  <ShimmerPlaceholder
+                    style={{
+                      width: '100%',
+                      height: heightPercentageToDP(10),
+                      marginVertical: heightPercentageToDP(3),
+                    }}></ShimmerPlaceholder>
+                  <ShimmerPlaceholder
+                    style={{
+                      width: '100%',
+                      height: heightPercentageToDP(3),
+                      marginVertical: heightPercentageToDP(3),
+                    }}></ShimmerPlaceholder>
+                </View>
+              );
+            }}
+          />
+        </View>
+      );
   }
 };
 

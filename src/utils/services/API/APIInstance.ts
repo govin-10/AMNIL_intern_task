@@ -17,7 +17,7 @@ api.interceptors.request.use(async config => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  console.log('Request config:', config); // Log the request config
+  // console.log('Request config:', config); // Log the request config
 
   return config;
 });

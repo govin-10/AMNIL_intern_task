@@ -1,46 +1,59 @@
-// import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-// import {api} from '../../../utils';
-// import {UserType} from '../../../types/auth/AuthTypes';
-// import {User} from '../../../types';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {api} from '../../../utils';
+import {User} from '../../../types/auth/AuthTypes';
 
-// const initialState: UserType = {
-//   user: null,
-//   status: 'loading',
-//   error: null,
-// };
+interface userState {
+  user: User | null;
+  loading: boolean;
+  error: null | string;
+}
 
-// export const fetchCurrentUser = createAsyncThunk(
-//   '/currentUser',
-//   async (_, {rejectWithValue}) => {
-//     try {
-//       const currentUser = await api.get('/auth/me');
-//       console.log(currentUser.data);
-//       return currentUser.data;
-//     } catch (error) {
-//       console.log(error);
-//       rejectWithValue('error');
-//     }
-//   },
-// );
+const initialState: userState = {
+  user: null,
+  loading: false,
+  error: null,
+};
 
-// const userSlice = createSlice({
-//   name: 'user',
-//   initialState,
-//   reducers: {},
-//   extraReducers: builder => {
-//     builder.addCase(fetchCurrentUser.pending, state => {
-//       state.status = 'loading';
-//       state.error = null;
-//     });
-//     builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
-//       state.status = 'succeeded';
-//       state.user = action.payload;
-//     });
-//     builder.addCase(fetchCurrentUser.rejected, (state, action) => {
-//       state.status = 'failed';
-//       state.error = action.payload as string;
-//     });
-//   },
-// });
+export const fetchUserById = createAsyncThunk(
+  '/fetchUserById',
+  async (id: number, {rejectWithValue}) => {
+    try {
+      console.log('ik api calling', id);
+      const user = await api.get(`/users/${id}`);
+      console.log('uurj', user.data);
+      return user.data;
+    } catch (error) {
+      console.log(error);
+      rejectWithValue('error');
+    }
+  },
+);
 
-// export default userSlice.reducer;
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {},
+  extraReducers: builder => {
+    builder.addCase(fetchUserById.pending, state => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      fetchUserById.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        console.log('api success');
+        state.user = action.payload;
+        state.loading = false;
+      },
+    );
+    builder.addCase(
+      fetchUserById.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.error = action.payload as string;
+        state.loading = false;
+      },
+    );
+  },
+});
+
+export default userSlice.reducer;
