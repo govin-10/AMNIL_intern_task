@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ToastAndroid,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {
   DrawerContentScrollView,
@@ -6,15 +13,26 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import {COLOR} from '../../constants';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../redux/store';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {logout} from '../../redux/features/auth/authSlice';
+import {showToast} from '../../utils/RNToast/ToastMessage';
+import Toast from 'react-native-toast-message';
 const CustomDrawer = (props: any) => {
+  const dispatch: AppDispatch = useDispatch();
+
+  const handleLogout = async () => {
+    dispatch(logout());
+    showToast('success', 'logout successful');
+    // ToastAndroid.show('logout success', 1000);
+  };
+
   const {
     drawerStyle,
     drawerContainer,
@@ -72,7 +90,7 @@ const CustomDrawer = (props: any) => {
               // style={drawerItem}
             />
           </View>
-          <TouchableOpacity style={logoutContainer}>
+          <TouchableOpacity style={logoutContainer} onPress={handleLogout}>
             <MaterialIcons name="logout" color="white" size={25} />
             <Text style={logoutText}>Logout</Text>
           </TouchableOpacity>

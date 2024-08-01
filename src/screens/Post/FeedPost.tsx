@@ -5,12 +5,17 @@ import {
   View,
   RefreshControl,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchFeedPosts} from '../../redux/features/post/postSlice';
 import {PostComponent} from '../../components';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 
 const FeedPost = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,7 +41,7 @@ const FeedPost = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={controlRefresh} />
       }>
-      {posts.length > 0 && !refreshing ? (
+      {posts.length > 0 && !refreshing && !loading ? (
         // posts.map(post => {
         //   return <Text>{post.title}</Text>;
         // })
@@ -55,7 +60,16 @@ const FeedPost = () => {
           scrollEnabled={false}
         />
       ) : (
-        <Text>loading</Text>
+        <ActivityIndicator
+          size={'large'}
+          style={{
+            flex: 1,
+            width: widthPercentageToDP(100),
+            height: heightPercentageToDP(100),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        />
       )}
     </ScrollView>
   );

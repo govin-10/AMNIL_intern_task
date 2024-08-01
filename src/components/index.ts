@@ -3,3 +3,4 @@ export {default as Banner} from './Banner/Banner';
 export {default as SkeletonLoader} from './Skeleton/Skeleton';
 export {default as DrawerContent} from './CustomDrawer/CustomDrawer';
 export {default as PostComponent} from './posts/Post';
+export {default as ScreenWithBackComp} from './ScreenWithBackButton/ScreenWithBack';

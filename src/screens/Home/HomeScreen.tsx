@@ -18,6 +18,7 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
+import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
 
 const HomeScreen: React.FC = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
@@ -32,6 +33,12 @@ const HomeScreen: React.FC = ({navigation}: any) => {
       dispatch(fetchProductsByCategory(category));
     });
   }, [dispatch]);
+
+  /*to fetch the current user, after the user logs in, because there is no token if user has to login and the rootnav
+  we set up to load current user wont work, since we need the current user data throughout the App...*/
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch, user]);
 
   const categories = ['smartphones', 'vehicle', 'groceries'];
 
@@ -75,12 +82,13 @@ const HomeScreen: React.FC = ({navigation}: any) => {
   //rendering whole categories
   return (
     <View style={styles.homeContainer}>
-      <HeaderComponent navigation={navigation} />
-      {cartError ? <>{console.log('Failed to fetch cart')}</> : null}
-      <ScrollView>
-        <Banner />
-        {categories.map(renderCategorySection)}
-      </ScrollView>
+      <HeaderComponent navigation={navigation}>
+        {cartError ? <>{console.log('Failed to fetch cart')}</> : null}
+        <ScrollView>
+          <Banner />
+          {categories.map(renderCategorySection)}
+        </ScrollView>
+      </HeaderComponent>
     </View>
   );
 };

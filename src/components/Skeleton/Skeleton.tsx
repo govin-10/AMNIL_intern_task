@@ -69,8 +69,11 @@ const Skeleton = ({screenType}: SkeletonProps) => {
         <View style={styles.searchItem}>
           <ShimmerPlaceholder style={styles.searchItemImage} />
           <View style={styles.searchItemTextContainer}>
-            <ShimmerPlaceholder style={styles.searchItemText} />
-            <ShimmerPlaceholder style={styles.searchItemText} />
+            <View>
+              <ShimmerPlaceholder style={styles.searchItemText} />
+              <ShimmerPlaceholder style={styles.searchPrice} />
+            </View>
+            <ShimmerPlaceholder style={styles.searchStock} />
           </View>
         </View>
       );
@@ -78,7 +81,7 @@ const Skeleton = ({screenType}: SkeletonProps) => {
       return (
         <View style={styles.searchSkeletonContainer}>
           <FlatList
-            data={[{}, {}, {}, {}, {}]} // Dummy data to render skeletons
+            data={[{}, {}, {}, {}, {}, {}, {}]} // Dummy data to render skeletons
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -206,9 +209,10 @@ const styles = StyleSheet.create({
 
   searchSkeletonContainer: {
     flex: 1,
-    width: '100%',
+    width: widthPercentageToDP(100),
   },
   searchItem: {
+    width: '100%',
     flexDirection: 'row',
     gap: 10,
     marginVertical: heightPercentageToDP(1),
@@ -220,12 +224,26 @@ const styles = StyleSheet.create({
   },
   searchItemTextContainer: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   searchItemText: {
-    height: 20,
+    height: 25,
     marginBottom: 5,
     borderRadius: 4,
   },
+  searchPrice: {
+    height: 15,
+    width: 50,
+  },
+  searchStock: {
+    width: 50,
+    height: 30,
+    alignSelf: 'flex-start',
+    borderRadius: 10,
+    margin: 10,
+  },
+
   detailContainer: {
     flex: 1,
     padding: widthPercentageToDP(2),

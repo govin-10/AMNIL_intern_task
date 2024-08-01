@@ -42,59 +42,60 @@ const CartScreen = ({navigation}: any) => {
 
   return (
     <View style={cartPage}>
-      <HeaderComponent navigation={navigation} />
-      <ScrollView style={cartContainer}>
-        <Text style={headerText}>Cart</Text>
-        <View style={cartCollection}>
-          {cart.length > 0 ? (
-            <>
-              {cart.map(cartItem => {
-                return (
-                  <View style={cartItemContainer}>
-                    <View style={imageContainer}>
-                      <Image
-                        style={cartThumbnail}
-                        source={{uri: cartItem.thumbnail}}
-                      />
-                    </View>
-                    <View style={itemInfo}>
-                      <View>
-                        <Text style={itemName}>{cartItem.title}</Text>
-                        <Text>Stock left: {cartItem.stock}</Text>
+      <HeaderComponent navigation={navigation}>
+        <ScrollView style={cartContainer}>
+          <Text style={headerText}>Cart</Text>
+          <View style={cartCollection}>
+            {cart.length > 0 ? (
+              <>
+                {cart.map(cartItem => {
+                  return (
+                    <View key={cartItem.id} style={cartItemContainer}>
+                      <View style={imageContainer}>
+                        <Image
+                          style={cartThumbnail}
+                          source={{uri: cartItem.thumbnail}}
+                        />
                       </View>
-                      <View style={footer}>
-                        <Text>${cartItem.discountedTotal.toFixed(2)}</Text>
-                        <View style={updateQuantSection}>
-                          <TouchableOpacity
-                            onPress={() => dispatch(decreaseCart(cartItem))}>
-                            <Text style={updateButton}>-</Text>
-                          </TouchableOpacity>
-                          <Text style={quantity}>{cartItem.quantity}</Text>
-                          <TouchableOpacity
-                            onPress={() => dispatch(increaseCart(cartItem))}>
-                            <Text style={updateButton}>+</Text>
-                          </TouchableOpacity>
+                      <View style={itemInfo}>
+                        <View>
+                          <Text style={itemName}>{cartItem.title}</Text>
+                          <Text>Stock left: {cartItem.stock}</Text>
+                        </View>
+                        <View style={footer}>
+                          <Text>${cartItem.discountedTotal.toFixed(2)}</Text>
+                          <View style={updateQuantSection}>
+                            <TouchableOpacity
+                              onPress={() => dispatch(decreaseCart(cartItem))}>
+                              <Text style={updateButton}>-</Text>
+                            </TouchableOpacity>
+                            <Text style={quantity}>{cartItem.quantity}</Text>
+                            <TouchableOpacity
+                              onPress={() => dispatch(increaseCart(cartItem))}>
+                              <Text style={updateButton}>+</Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       </View>
                     </View>
-                  </View>
-                );
-              })}
-            </>
-          ) : (
-            <Text>Nothing in cart for now...</Text>
-          )}
-        </View>
-        <View style={total}>
-          <Text style={totalContent}>Total:</Text>
-          <Text style={totalContent}>${cartTotalPrice.toFixed(2)}</Text>
-        </View>
-        <Button
-          title="Checkout"
-          onPress={() => console.log('Checkout')}
-          style={{marginVertical: heightPercentageToDP(1)}}
-        />
-      </ScrollView>
+                  );
+                })}
+              </>
+            ) : (
+              <Text>Nothing in cart for now...</Text>
+            )}
+          </View>
+          <View style={total}>
+            <Text style={totalContent}>Total:</Text>
+            <Text style={totalContent}>${cartTotalPrice.toFixed(2)}</Text>
+          </View>
+          <Button
+            title="Checkout"
+            onPress={() => console.log('Checkout')}
+            style={{marginVertical: heightPercentageToDP(1)}}
+          />
+        </ScrollView>
+      </HeaderComponent>
     </View>
   );
 };
