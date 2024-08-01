@@ -15,4 +15,5 @@ export interface postState {
   posts: post[];
   loading: boolean;
   error: string | null;
+  nextId: number;
 }

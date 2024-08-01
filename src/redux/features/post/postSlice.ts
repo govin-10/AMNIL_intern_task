@@ -1,11 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {api} from '../../../utils';
 import {postState} from '../../../types';
+import {post} from '../../../types/post/postTypes';
 
 const initialState: postState = {
   posts: [],
   loading: false,
   error: null,
+  nextId: 500,
 };
 
 export const getPostsById = createAsyncThunk(
@@ -36,7 +38,40 @@ export const fetchFeedPosts = createAsyncThunk(
 const mypostSlice = createSlice({
   name: 'post',
   initialState,
-  reducers: {},
+  reducers: {
+    setPosts(state, action: PayloadAction<post[]>) {
+      state.posts = action.payload;
+    },
+    addPost(state, action: PayloadAction<any>) {
+      const {title, body, userId} = action.payload;
+      const newPost: post = {
+        id: state.nextId,
+        title,
+        body,
+        reactions: {
+          likes: Math.floor(Math.random() * 100),
+          dislikes: Math.floor(Math.random() * 100),
+        },
+        views: 0,
+        userId,
+      };
+      state.posts.push(newPost);
+      state.nextId += 1;
+    },
+    updatePost(
+      state,
+      action: PayloadAction<{id: number; title: string; body: string}>,
+    ) {
+      const {id, title, body} = action.payload;
+      const postIndex = state.posts.findIndex(post => post.id === id);
+      if (postIndex !== -1) {
+        state.posts[postIndex] = {...state.posts[postIndex], title, body};
+      }
+    },
+    removePost(state, action: PayloadAction<number>) {
+      state.posts = state.posts.filter(post => post.id !== action.payload);
+    },
+  },
   extraReducers: builder => {
     builder.addCase(getPostsById.pending, state => {
       state.loading = true;
@@ -85,3 +120,4 @@ const feedpostSlice = createSlice({
 
 export default mypostSlice.reducer;
 export const feedpostReducer = feedpostSlice.reducer;
+export const {setPosts, addPost, updatePost, removePost} = mypostSlice.actions;

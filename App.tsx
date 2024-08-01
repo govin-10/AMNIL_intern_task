@@ -10,12 +10,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
 import RootStackNav from './src/navigations/RootStack/RootStackNav';
+import Toast from 'react-native-toast-message';
 
 function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <RootStackNav />
+        <Toast />
       </NavigationContainer>
     </Provider>
   );

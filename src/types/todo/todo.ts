@@ -7,6 +7,9 @@ export interface todo {
 
 export interface todoState {
   todoList: todo[];
+  searchQuery: string;
+  filteredList: todo[];
   loading: boolean;
   error: string | null;
+  nextId: number;
 }

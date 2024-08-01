@@ -1,4 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {post} from '../../types/post/postTypes';
 import {useDispatch} from 'react-redux';
@@ -12,6 +20,8 @@ import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import {api} from '../../utils';
 import {User} from '../../types/auth/AuthTypes';
+import {removePost, updatePost} from '../../redux/features/post/postSlice';
+import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
 
 interface IPostProps {
   postInfo: post;
@@ -26,7 +36,13 @@ const Post: React.FC<IPostProps> = ({
   deleteable,
   userId,
 }) => {
+  const dispatch: AppDispatch = useDispatch();
+
   const [user, setUser] = useState<User | null>(null);
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [id, setId] = useState<number>(0);
+  const [title, setTitle] = useState<string>('');
+  const [body, setBody] = useState<string>('');
 
   useEffect(() => {
     const getUser = async () => {
@@ -42,6 +58,23 @@ const Post: React.FC<IPostProps> = ({
       getUser();
     }
   }, [userId]);
+
+  const handleEditPost = (post: any) => {
+    console.log(post);
+    setBody(post.body);
+    setTitle(post.title);
+    setId(post.id);
+    setModalVisible(true);
+  };
+
+  const handleSaveEdit = () => {
+    console.log(title, body, id);
+    dispatch(updatePost({id, title, body}));
+    setModalVisible(false); // Hide the modal
+    setId(0); // Clear selectedTodo
+    setTitle('');
+    setBody('');
+  };
 
   const {
     postContainer,
@@ -62,21 +95,24 @@ const Post: React.FC<IPostProps> = ({
     <View style={postContainer}>
       {editable && deleteable && (
         <View style={options}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => handleEditPost(postInfo)}>
             <IconAwesome
               name="edit"
               size={17}
               color={COLOR.PRIMARY_BUTTON_BG}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => dispatch(removePost(postInfo.id))}>
             <IconAnt name="delete" size={20} color={'red'} />
           </TouchableOpacity>
         </View>
       )}
       <View style={authorInfo}>
         <View style={imageContainer}>
-          <Image source={{uri: user?.image}} style={profileImage} />
+          <Image
+            source={user?.image ? {uri: user?.image} : IMAGE_PATH.logo}
+            style={profileImage}
+          />
         </View>
         <View>
           <Text style={name}>
@@ -104,6 +140,61 @@ const Post: React.FC<IPostProps> = ({
           <Text>{postInfo.views}</Text>
         </View>
       </View>
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalView}>
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            style={styles.modalInput}
+          />
+          <TextInput
+            value={body}
+            onChangeText={setBody}
+            multiline={true}
+            style={[styles.modalInput]}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              gap: 20,
+            }}>
+            <TouchableOpacity
+              onPress={handleSaveEdit}
+              style={styles.modalButton}>
+              <Text style={{color: 'white'}}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.modalButton}>
+              <Text style={{color: 'white'}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalView}>
+          <TextInput
+            value={editedTodo}
+            onChangeText={setEditedTodo}
+            style={styles.modalInput}
+          />
+          <TouchableOpacity onPress={handleSaveEdit} style={styles.modalButton}>
+            <Text style={{color: 'white'}}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            style={styles.modalButton}>
+            <Text style={{color: 'white'}}>Cancel</Text>
+          </TouchableOpacity>
+        </View> */}
+      {/* </Modal> */}
     </View>
   );
 };
@@ -163,5 +254,25 @@ const styles = StyleSheet.create({
   reactions: {
     flexDirection: 'row',
     gap: widthPercentageToDP(4),
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Background overlay
+    padding: 10,
+  },
+  modalInput: {
+    width: '100%',
+    padding: widthPercentageToDP(3),
+    marginBottom: heightPercentageToDP(2),
+    backgroundColor: 'white',
+    borderRadius: 10,
+  },
+  modalButton: {
+    backgroundColor: COLOR.PRIMARY_BUTTON_BG,
+    padding: widthPercentageToDP(2),
+    borderRadius: widthPercentageToDP(4),
+    marginVertical: heightPercentageToDP(1),
   },
 });

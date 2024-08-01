@@ -1,6 +1,7 @@
 import {
   Image,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,33 +18,42 @@ import {COLOR} from '../../constants';
 
 interface IHeaderProps {
   navigation: any;
+  children: ReactNode;
 }
 
-const Header: React.FC<IHeaderProps> = ({navigation}) => {
-  const {headerContainer, logoContainer, name, logo, accountIcon} = styles;
+const Header: React.FC<IHeaderProps> = ({navigation, children}) => {
+  const {pageWrapper, headerContainer, logoContainer, name, logo, accountIcon} =
+    styles;
 
   return (
-    <View style={headerContainer}>
-      <View style={logoContainer}>
-        <Image source={IMAGE_PATH.icon} style={logo} />
-      </View>
+    <SafeAreaView style={pageWrapper}>
+      <View style={headerContainer}>
+        <View style={logoContainer}>
+          <Image source={IMAGE_PATH.logo} style={logo} />
+        </View>
 
-      <Text style={name}>Amnilite</Text>
-      <TouchableOpacity onPress={() => navigation.openDrawer()}>
-        <MaterialIcon
-          name="menu"
-          size={wp(6)}
-          color="black"
-          style={accountIcon}
-        />
-      </TouchableOpacity>
-    </View>
+        <Text style={name}>Amnilite</Text>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <MaterialIcon
+            name="menu"
+            size={wp(6)}
+            color="black"
+            style={accountIcon}
+          />
+        </TouchableOpacity>
+      </View>
+      {children}
+    </SafeAreaView>
   );
 };
 
 export default Header;
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    width: '100%',
+  },
   headerContainer: {
     width: '100%',
     height: hp(6),
@@ -55,10 +65,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.CARD_BACKGROUND,
   },
   logoContainer: {
-    height: 50,
-    width: 50,
+    height: '100%',
+    width: wp(5),
     justifyContent: 'center',
     alignSelf: 'center',
+    marginLeft: wp(2),
   },
   logo: {
     width: '100%',

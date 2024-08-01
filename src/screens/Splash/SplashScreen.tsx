@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.PRIMARY_BACKGROUND,
   },
   imageLogo: {
-    height: hp(40),
-    width: wp(40),
+    width: wp(38),
+    height: hp(28),
   },
   image: {
     height: '100%',
     width: '100%',
+    resizeMode: 'contain',
   },
 });

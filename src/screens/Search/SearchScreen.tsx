@@ -1,10 +1,12 @@
 import {
   FlatList,
   Image,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -23,6 +25,7 @@ import {
 } from 'react-native-responsive-screen';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {SkeletonLoader} from '../../components';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SearchScreen: React.FC = ({navigation}: any) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -31,7 +34,7 @@ const SearchScreen: React.FC = ({navigation}: any) => {
   const {results, loading, error} = useSelector(
     (state: RootState) => state.search,
   );
-  const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -43,6 +46,17 @@ const SearchScreen: React.FC = ({navigation}: any) => {
       dispatch(clearResults());
     }
   }, [debouncedSearchTerm, dispatch]);
+
+  //arko screen ma switch huda search results clear garna khojeko, state lai clear gardera, but UX ramro nahune rachha,lol
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // Clear search term and results when the screen is unfocused
+  //     return () => {
+  //       setSearchTerm('');
+  //       dispatch(clearResults());
+  //     };
+  //   }, [dispatch]),
+  // );
 
   const {
     searchContainer,
@@ -57,76 +71,74 @@ const SearchScreen: React.FC = ({navigation}: any) => {
   } = styles;
 
   return (
-    <View style={searchContainer}>
-      <View style={searchBox}>
-        <AntIcon name="search1" size={wp(5.5)} color={COLOR.ACTIVE_TAB_ICON} />
-        <TextInput style={searchBar} onChangeText={setSearchTerm} />
-      </View>
-
-      {loading ? (
-        <SkeletonLoader screenType="searchLoader" />
-      ) : results.length > 0 ? (
-        <FlatList
-          data={results}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Details', {id: item.id})}>
-                <View style={itemContainer}>
-                  <View style={itemLeft}>
-                    <Image source={{uri: item?.images[0]}} style={itemImage} />
-                    <View>
-                      <Text style={itemName}>{item?.title}</Text>
-                      <Text style={itemPrice}>Rs.{item.price}</Text>
-                    </View>
-                  </View>
-                  <Text
-                    style={[
-                      stockInfo,
-                      {
-                        backgroundColor:
-                          item.availabilityStatus === 'In Stock'
-                            ? 'green'
-                            : item.availabilityStatus === 'Low Stock'
-                            ? 'orange'
-                            : 'red',
-                      },
-                    ]}>
-                    {item.availabilityStatus}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      ) : !loading && searchTerm ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text
-            style={{
-              fontSize: wp(7),
-              color: COLOR.PRIMARY_TEXT,
-              fontWeight: 'bold',
-            }}>
-            No search result found.
-          </Text>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={searchContainer}>
+        <View style={searchBox}>
+          <AntIcon
+            name="search1"
+            size={wp(5.5)}
+            color={COLOR.ACTIVE_TAB_ICON}
+          />
+          <TextInput style={searchBar} onChangeText={setSearchTerm} />
         </View>
-      ) : (
-        !loading && (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text
-              style={{
-                fontSize: wp(7),
-                color: COLOR.PRIMARY_TEXT,
-                fontWeight: 'bold',
-              }}>
-              Search to get started...
-            </Text>
-          </View>
-        )
-      )}
-    </View>
+
+        {loading ? (
+          <SkeletonLoader screenType="searchLoader" />
+        ) : results.length > 0 ? (
+          <FlatList
+            data={results}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Details', {id: item.id})}>
+                  <View style={itemContainer}>
+                    <View style={itemLeft}>
+                      <Image
+                        source={{uri: item?.images[0]}}
+                        style={itemImage}
+                      />
+                      <View>
+                        <Text style={itemName}>{item?.title}</Text>
+                        <Text style={itemPrice}>Rs.{item.price}</Text>
+                      </View>
+                    </View>
+                    <Text
+                      style={[
+                        stockInfo,
+                        {
+                          backgroundColor:
+                            item.availabilityStatus === 'In Stock'
+                              ? 'green'
+                              : item.availabilityStatus === 'Low Stock'
+                              ? 'orange'
+                              : 'red',
+                        },
+                      ]}>
+                      {item.availabilityStatus}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        ) : (
+          !loading && (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontSize: wp(7),
+                  color: COLOR.PRIMARY_TEXT,
+                  fontWeight: 'bold',
+                }}>
+                Search to get started...
+              </Text>
+            </View>
+          )
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -18,10 +18,13 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {AppStackParamList} from '../../types';
+import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
+import ScreenWithBack from '../../components/ScreenWithBackButton/ScreenWithBack';
+import {ToastAndroid} from 'react-native';
 
 type DetailScreenRouteProp = RouteProp<AppStackParamList, 'Details'>;
 
-const DetailScreen: React.FC = () => {
+const DetailScreen: React.FC = ({navigation}: any) => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
 
@@ -53,6 +56,11 @@ const DetailScreen: React.FC = () => {
     );
   };
 
+  const handleAddtoCart = () => {
+    dispatch(addToCart({product, quantity}));
+    ToastAndroid.show('Added to cart', 2000);
+  };
+
   const increaseQuantity = () => {
     setQuantity(prev => Math.min(prev + 1, 10));
     dispatch(decreaseStock(quantity));
@@ -64,7 +72,7 @@ const DetailScreen: React.FC = () => {
 
   const {
     detailContainer,
-    backIcon,
+
     imageContainer,
     image,
     title,
@@ -87,71 +95,72 @@ const DetailScreen: React.FC = () => {
 
   return (
     <View style={detailContainer}>
-      <TouchableOpacity style={backIcon}>
-        <IoniIcons name="arrow-back" size={25} color={'black'} />
-      </TouchableOpacity>
-      {loading ? (
-        <SkeletonLoader screenType="detailLoader" />
-      ) : (
-        <View>
-          <View style={imageContainer}>
-            <Image source={{uri: product?.images[0]}} style={image} />
-          </View>
-          <Text style={title}>{product?.title}</Text>
-          <Text style={description}>{product?.description}</Text>
-          <Text style={price}>${product?.price}</Text>
-          <View style={ratingFavContainer}>
-            {renderRating(product?.rating ?? 0)}
-            <IoniIcons name="heart-outline" size={25} color={'black'} />
-          </View>
-          <Text
-            style={[
-              stockInfo,
-              {
-                backgroundColor:
-                  product?.availabilityStatus === 'In Stock'
-                    ? 'green'
-                    : product?.availabilityStatus === 'Low Stock'
-                    ? 'orange'
-                    : 'red',
-              },
-            ]}>
-            Stock Quantity: {stock}
-          </Text>
-          <View style={cartContainer}>
-            <View style={incDecContainer}>
-              <TouchableOpacity onPress={decreaseQuantity}>
-                <Text style={incdecButton}>-</Text>
+      <ScreenWithBack navigation={navigation}>
+        {loading ? (
+          <SkeletonLoader screenType="detailLoader" />
+        ) : (
+          <View>
+            <View style={imageContainer}>
+              {product?.images ? (
+                <Image source={{uri: product?.images[0]}} style={image} />
+              ) : (
+                <Image source={IMAGE_PATH.logo} style={image} />
+              )}
+            </View>
+            <Text style={title}>{product?.title}</Text>
+            <Text style={description}>{product?.description}</Text>
+            <Text style={price}>${product?.price}</Text>
+            <View style={ratingFavContainer}>
+              {renderRating(product?.rating ?? 0)}
+              <IoniIcons name="heart-outline" size={25} color={'black'} />
+            </View>
+            <Text
+              style={[
+                stockInfo,
+                {
+                  backgroundColor:
+                    product?.availabilityStatus === 'In Stock'
+                      ? 'green'
+                      : product?.availabilityStatus === 'Low Stock'
+                      ? 'orange'
+                      : 'red',
+                },
+              ]}>
+              Stock Quantity: {stock}
+            </Text>
+            <View style={cartContainer}>
+              <View style={incDecContainer}>
+                <TouchableOpacity onPress={decreaseQuantity}>
+                  <Text style={incdecButton}>-</Text>
+                </TouchableOpacity>
+                <Text style={cartNum}>{quantity}</Text>
+                <TouchableOpacity onPress={increaseQuantity}>
+                  <Text style={incdecButton}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={addCartButton} onPress={handleAddtoCart}>
+                <IoniIcons name="cart" size={30} color={'white'} />
+                <Text style={addCartText}>Add to Cart</Text>
               </TouchableOpacity>
-              <Text style={cartNum}>{quantity}</Text>
-              <TouchableOpacity onPress={increaseQuantity}>
-                <Text style={incdecButton}>+</Text>
-              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={addCartButton}
-              onPress={() => dispatch(addToCart({product, quantity}))}>
-              <IoniIcons name="cart" size={30} color={'white'} />
-              <Text style={addCartText}>Add to Cart</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={specificationContainer}>
-            <Text style={specHeader}>Specifications</Text>
-            <View style={specContain}>
-              <Text style={specTitle}>Warranty: </Text>
-              <Text style={specValue}>{product?.warrantyInformation}</Text>
-            </View>
-            <View style={specContain}>
-              <Text style={specTitle}>Shipping: </Text>
-              <Text style={specValue}>{product?.shippingInformation}</Text>
-            </View>
-            <View style={specContain}>
-              <Text style={specTitle}>Warranty: </Text>
-              <Text style={specValue}>{product?.warrantyInformation}</Text>
+            <View style={specificationContainer}>
+              <Text style={specHeader}>Specifications</Text>
+              <View style={specContain}>
+                <Text style={specTitle}>Warranty: </Text>
+                <Text style={specValue}>{product?.warrantyInformation}</Text>
+              </View>
+              <View style={specContain}>
+                <Text style={specTitle}>Shipping: </Text>
+                <Text style={specValue}>{product?.shippingInformation}</Text>
+              </View>
+              <View style={specContain}>
+                <Text style={specTitle}>Warranty: </Text>
+                <Text style={specValue}>{product?.warrantyInformation}</Text>
+              </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
+      </ScreenWithBack>
     </View>
   );
 };
@@ -163,9 +172,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: widthPercentageToDP(2),
     backgroundColor: COLOR.PRIMARY_BACKGROUND,
-  },
-  backIcon: {
-    marginVertical: heightPercentageToDP(1.5),
   },
   imageContainer: {
     width: '100%',

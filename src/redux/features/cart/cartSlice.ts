@@ -67,6 +67,7 @@ const cartSlice = createSlice({
       // console.log(action.payload);
       const {id, stock, quantity} = action.payload;
       const cartItem = state.cart.find(item => item.id === id);
+      if (cartItem.quantity >= 10) return;
       cartItem.stock -= 1;
       cartItem.quantity += 1;
     },

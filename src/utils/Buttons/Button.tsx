@@ -13,7 +13,7 @@ import {
 } from 'react-native-responsive-screen';
 
 interface IButtonProps {
-  title: string;
+  title: any;
   onPress: (event: GestureResponderEvent) => void;
   style?: object;
   textStyles?: object;
