@@ -16,10 +16,10 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {logout} from '../../redux/features/auth/authSlice';
-import {showToast} from '../../utils/RNToast/ToastMessage';
+import {logout} from '../../redux/features';
+import {showToast} from '../../utils';
 
-const AccountScreen = ({navigation}: any) => {
+const AccountScreen: React.FC = ({navigation}: any) => {
   const {user} = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 

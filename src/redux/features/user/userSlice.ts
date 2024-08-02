@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {User} from '../../../types/auth/AuthTypes';
+import {fetchUserById} from './userThunk';
 
 interface userState {
   user: User | null;
@@ -13,21 +13,6 @@ const initialState: userState = {
   loading: false,
   error: null,
 };
-
-export const fetchUserById = createAsyncThunk(
-  '/fetchUserById',
-  async (id: number, {rejectWithValue}) => {
-    try {
-      console.log('ik api calling', id);
-      const user = await api.get(`/users/${id}`);
-      console.log('uurj', user.data);
-      return user.data;
-    } catch (error) {
-      console.log(error);
-      rejectWithValue('error');
-    }
-  },
-);
 
 const userSlice = createSlice({
   name: 'user',

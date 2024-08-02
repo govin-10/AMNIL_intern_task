@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AppDispatch} from '../../../redux/store';
-import {useDispatch} from 'react-redux';
-import {logout} from '../../../redux/features/auth/authSlice';
+// import {AppDispatch} from '../../../redux/store';
+// import {useDispatch} from 'react-redux';
+// import {logout} from '../../../redux/features/auth/authSlice';
 
 const BASE_URL = 'https://dummyjson.com/';
 

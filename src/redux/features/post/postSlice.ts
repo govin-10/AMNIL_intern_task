@@ -1,7 +1,7 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {postState} from '../../../types';
 import {post} from '../../../types/post/postTypes';
+import {fetchFeedPosts, getPostsById} from './postThunk';
 
 const initialState: postState = {
   posts: [],
@@ -9,31 +9,6 @@ const initialState: postState = {
   error: null,
   nextId: 500,
 };
-
-export const getPostsById = createAsyncThunk(
-  '/getPostsById',
-  async (id: number, {rejectWithValue}) => {
-    try {
-      const postLists = await api.get(`/posts/user/${id}`);
-      return postLists.data.posts;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
-
-export const fetchFeedPosts = createAsyncThunk(
-  '/feed',
-  async (skip: number, {rejectWithValue}) => {
-    try {
-      const currentPagePosts = await api.get(`/posts?limit=10&skip=${skip}`);
-
-      return currentPagePosts.data.posts;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
 
 const mypostSlice = createSlice({
   name: 'post',

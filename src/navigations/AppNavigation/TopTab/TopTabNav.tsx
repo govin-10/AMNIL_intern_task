@@ -1,11 +1,11 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {FeedScreen, MyPostScreen} from '../../../screens';
 import {COLOR} from '../../../constants';
-import {heightPercentageToDP} from 'react-native-responsive-screen';
+import React from 'react';
 
 const PostTab = createMaterialTopTabNavigator();
 
-const TopTabBar = () => {
+const TopTabBar: React.FC = () => {
   return (
     <PostTab.Navigator
       initialRouteName="Feed"

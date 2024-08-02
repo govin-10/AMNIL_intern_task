@@ -1,11 +1,15 @@
+import {StyleSheet} from 'react-native';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList} from '../../../types';
-import React from 'react';
-import {AccountScreen, CartScreen, HomeScreen} from '../../../screens';
-import SearchScreen from '../../../screens/Search/SearchScreen';
+import {
+  AccountScreen,
+  CartScreen,
+  HomeScreen,
+  SearchScreen,
+} from '../../../screens';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,

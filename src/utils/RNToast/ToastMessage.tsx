@@ -1,14 +1,6 @@
-// ToastComponent.tsx
-import React from 'react';
 import Toast from 'react-native-toast-message';
 
-// const ToastComponent: React.FC = () => {
-//     return (
-//         <Toast ref={(ref) => Toast.setRef(ref)} />
-//     );
-// };
-
-export const showToast = (
+const showToast = (
   type: 'success' | 'error' | 'info',
   text1: string,
   text2?: string,
@@ -21,4 +13,4 @@ export const showToast = (
   });
 };
 
-// export default ToastComponent;
+export default showToast;

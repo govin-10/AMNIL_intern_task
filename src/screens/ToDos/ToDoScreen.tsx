@@ -12,13 +12,12 @@ import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   addToDo,
-  completeTodo,
   getTodo,
+  completeTodo,
   removeToDo,
   searchToDo,
   updateToDo,
-} from '../../redux/features/todo/todoSlice';
-import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
+} from '../../redux/features';
 import {ScreenWithBackComp} from '../../components';
 import {
   heightPercentageToDP,
@@ -26,7 +25,7 @@ import {
 } from 'react-native-responsive-screen';
 import {COLOR} from '../../constants';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {showToast} from '../../utils/RNToast/ToastMessage';
+import {showToast} from '../../utils';
 
 const ToDoScreen = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
@@ -80,10 +79,6 @@ const ToDoScreen = ({navigation}: any) => {
   };
 
   const completeTask = (item: any) => {
-    // if (item.completed == true) {
-    //   showToast('error', 'item already completed');
-    //   return;
-    // }
     dispatch(completeTodo({id: item.id}));
   };
 

@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {fetchSearchResults} from './searchThunk';
 
 interface SearchState {
   query: string;
@@ -15,27 +15,13 @@ const initialState: SearchState = {
   error: null,
 };
 
-export const fetchSearchResults = createAsyncThunk(
-  'search/fetchSearchResults',
-  async (query: string, {rejectWithValue}) => {
-    try {
-      console.log('api calling');
-      const response = await api.get(`products/search?q=${query}`);
-      console.log('hello', response.data.products);
-      return response.data.products;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
 const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
     setQuery(state, action: PayloadAction<string>) {
       state.query = action.payload;
-      console.log('qq', state.query);
+
       if (state.query === '') {
         state.results = [];
       }

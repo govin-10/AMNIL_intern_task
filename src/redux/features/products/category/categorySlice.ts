@@ -1,7 +1,6 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
-import {ProductType} from '../../../types';
-import axios from 'axios';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {fetchProductsByCategory} from './categoryThunk';
+import {ProductType} from '../../../../types';
 
 interface productCategoryState {
   product: {[key: string]: ProductType[]};
@@ -14,28 +13,6 @@ const initialState: productCategoryState = {
   categoryLoading: false,
   categoryError: null,
 };
-
-export const fetchProductsByCategory = createAsyncThunk(
-  '/fetchByCategory',
-  async (category: string, {rejectWithValue}) => {
-    try {
-      const productsByCategory = await api.get(
-        `/products/category/${category}?limit=10`,
-      );
-      const products = productsByCategory.data.products;
-
-      return {category, products};
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue({
-          message: error.message,
-          status: error.response?.status || 'Unknown status',
-        });
-      }
-      return rejectWithValue({message: 'An unknown error occurred'});
-    }
-  },
-);
 
 const categorySlice = createSlice({
   name: 'category',
