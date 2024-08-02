@@ -121,6 +121,7 @@ const ToDoScreen = ({navigation}: any) => {
           <Text style={styles.title}>ToDoS</Text>
           <TextInput
             placeholder="Search todos..."
+            placeholderTextColor={'black'}
             style={styles.searchInput}
             value={searchQuery}
             onChangeText={handleSearch}
@@ -132,6 +133,7 @@ const ToDoScreen = ({navigation}: any) => {
           />
           <TextInput
             placeholder="New todo..."
+            placeholderTextColor={'black'}
             style={styles.searchInput}
             value={newTodo}
             onChangeText={setNewTodo}
@@ -201,6 +203,7 @@ const styles = StyleSheet.create({
     marginVertical: heightPercentageToDP(1),
     backgroundColor: COLOR.INPUT_BACKGROUND,
     borderRadius: 10,
+    color: 'black',
   },
   title: {
     fontSize: widthPercentageToDP(5),

@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     marginBottom: heightPercentageToDP(2),
     backgroundColor: 'white',
     borderRadius: 10,
+    color: 'black',
   },
   modalButton: {
     backgroundColor: COLOR.PRIMARY_BUTTON_BG,

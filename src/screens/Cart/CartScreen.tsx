@@ -74,10 +74,14 @@ const CartScreen = ({navigation}: any) => {
                       <View style={itemInfo}>
                         <View>
                           <Text style={itemName}>{cartItem.title}</Text>
-                          <Text>Stock left: {cartItem.stock}</Text>
+                          <Text style={{color: 'black'}}>
+                            Stock left: {cartItem.stock}
+                          </Text>
                         </View>
                         <View style={footer}>
-                          <Text>${cartItem.discountedTotal.toFixed(2)}</Text>
+                          <Text style={{color: 'black'}}>
+                            ${cartItem.discountedTotal.toFixed(2)}
+                          </Text>
                           <View style={updateQuantSection}>
                             <TouchableOpacity
                               onPress={() => dispatch(decreaseCart(cartItem))}>

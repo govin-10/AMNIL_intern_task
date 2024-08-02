@@ -127,17 +127,21 @@ const Post: React.FC<IPostProps> = ({
       <View style={postStats}>
         <View style={reactions}>
           <View style={flexDisplay}>
-            <IconAnt name="like1" size={20} />
-            <Text>{postInfo.reactions.likes}</Text>
+            <IconAnt name="like1" size={20} color={'gray'} />
+            <Text style={{color: COLOR.PRIMARY_TEXT}}>
+              {postInfo.reactions.likes}
+            </Text>
           </View>
           <View style={flexDisplay}>
-            <IconAnt name="dislike1" size={20} />
-            <Text>{postInfo.reactions.dislikes}</Text>
+            <IconAnt name="dislike1" size={20} color={'gray'} />
+            <Text style={{color: COLOR.PRIMARY_TEXT}}>
+              {postInfo.reactions.dislikes}
+            </Text>
           </View>
         </View>
         <View style={flexDisplay}>
-          <IconAnt name="eyeo" size={20} />
-          <Text>{postInfo.views}</Text>
+          <IconAnt name="eyeo" size={20} color={'gray'} />
+          <Text style={{color: COLOR.PRIMARY_TEXT}}>{postInfo.views}</Text>
         </View>
       </View>
       <Modal
@@ -175,26 +179,6 @@ const Post: React.FC<IPostProps> = ({
           </View>
         </View>
       </Modal>
-      {/* visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalView}>
-          <TextInput
-            value={editedTodo}
-            onChangeText={setEditedTodo}
-            style={styles.modalInput}
-          />
-          <TouchableOpacity onPress={handleSaveEdit} style={styles.modalButton}>
-            <Text style={{color: 'white'}}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setModalVisible(false)}
-            style={styles.modalButton}>
-            <Text style={{color: 'white'}}>Cancel</Text>
-          </TouchableOpacity>
-        </View> */}
-      {/* </Modal> */}
     </View>
   );
 };

@@ -56,6 +56,7 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({navigation}: any) => {
             key={i}
             name={i < Math.floor(rating) ? 'star' : 'star-outline'}
             size={25}
+            color={'black'}
           />
         ))}
       </View>
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: widthPercentageToDP(3.5),
     marginVertical: heightPercentageToDP(1),
+    color: COLOR.PRIMARY_TEXT,
   },
   price: {
     fontSize: widthPercentageToDP(5),
@@ -246,7 +248,7 @@ const styles = StyleSheet.create({
     padding: heightPercentageToDP(1),
   },
   incdecButton: {
-    backgroundColor: COLOR.INPUT_BACKGROUND,
+    backgroundColor: COLOR.PRIMARY_TEXT,
     padding: widthPercentageToDP(3),
     borderRadius: widthPercentageToDP(5),
     fontSize: widthPercentageToDP(5),
@@ -254,6 +256,7 @@ const styles = StyleSheet.create({
   },
   cartNum: {
     fontSize: widthPercentageToDP(5),
+    color: 'black',
   },
   addCartText: {
     fontSize: widthPercentageToDP(4.5),
