@@ -17,13 +17,15 @@ const RootStackNav: React.FC = () => {
 
   //dispatching auth and cart info when the app loads.
   useEffect(() => {
-    const appinitialize = async () => {
+    const appinitialize = () => {
       setAppLoading(true); //just making sure apploading is true always when the app reloads.
-      await dispatch(checkToken());
-      if (token) {
-        await dispatch(fetchCurrentUser()); //current user chai suru mai check garera user ko data user state ma set gareko
-      }
-      setAppLoading(false);
+      setTimeout(async () => {
+        await dispatch(checkToken());
+        if (token) {
+          await dispatch(fetchCurrentUser()); //current user chai suru mai check garera user ko data user state ma set gareko
+        }
+        setAppLoading(false);
+      }, 2000);
     };
 
     appinitialize();

@@ -15,8 +15,16 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {COLOR} from '../../constants';
-import {increaseCart, decreaseCart} from '../../redux/features';
+import {
+  increaseCart,
+  decreaseCart,
+  removeCart,
+  clearCart,
+} from '../../redux/features';
 import {Button} from '../../utils';
+import {showToast} from '../../utils';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+// import showToast from "../../utils"
 
 const CartScreen = ({navigation}: any) => {
   const {cart, cartTotalPrice} = useSelector((state: RootState) => state.cart);
@@ -45,7 +53,12 @@ const CartScreen = ({navigation}: any) => {
     <View style={cartPage}>
       <HeaderComponent navigation={navigation}>
         <ScrollView style={cartContainer}>
-          <Text style={headerText}>Cart</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={headerText}>Cart</Text>
+            <TouchableOpacity onPress={() => dispatch(clearCart())}>
+              <Text style={{color: COLOR.PRIMARY_TEXT}}>Clear All</Text>
+            </TouchableOpacity>
+          </View>
           <View style={cartCollection}>
             {cart.length > 0 ? (
               <>
@@ -75,6 +88,13 @@ const CartScreen = ({navigation}: any) => {
                               onPress={() => dispatch(increaseCart(cartItem))}>
                               <Text style={updateButton}>+</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() =>
+                                dispatch(removeCart({id: cartItem.id}))
+                              }
+                              style={{marginLeft: 10, paddingLeft: 5}}>
+                              <AntIcon name="delete" color={'red'} size={20} />
+                            </TouchableOpacity>
                           </View>
                         </View>
                       </View>
@@ -92,7 +112,7 @@ const CartScreen = ({navigation}: any) => {
           </View>
           <Button
             title="Checkout"
-            onPress={() => console.log('Checkout')}
+            onPress={() => showToast('error', 'feature under maintenance')}
             style={{marginVertical: heightPercentageToDP(1)}}
           />
         </ScrollView>

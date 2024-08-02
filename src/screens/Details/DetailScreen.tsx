@@ -68,6 +68,7 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({navigation}: any) => {
   };
 
   const increaseQuantity = () => {
+    if (stock <= 1) return;
     if (quantity === 10) {
       ToastAndroid.show('limit reached', 1000);
       return;

@@ -64,7 +64,7 @@ const LoginScreen: React.FC = () => {
       />
       <View style={loginBox}>
         <View style={inputBox}>
-          <Text style={title}>Email Address</Text>
+          <Text style={title}>User Name</Text>
           <TextInput
             ref={userNameRef}
             keyboardType="email-address"
