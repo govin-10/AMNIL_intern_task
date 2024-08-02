@@ -152,7 +152,6 @@ const ToDoScreen = ({navigation}: any) => {
       {/* Modal for editing todo */}
       <Modal
         visible={isModalVisible}
-        // transparent={true}
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalView}>
@@ -248,6 +247,7 @@ const styles = StyleSheet.create({
     marginBottom: heightPercentageToDP(2),
     backgroundColor: 'white',
     borderRadius: 10,
+    color: COLOR.PRIMARY_TEXT,
   },
   modalButton: {
     backgroundColor: COLOR.PRIMARY_BUTTON_BG,
