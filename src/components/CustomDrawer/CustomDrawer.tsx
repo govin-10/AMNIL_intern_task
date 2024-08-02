@@ -1,17 +1,6 @@
-import {
-  ToastAndroid,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {COLOR} from '../../constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
@@ -19,18 +8,19 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {logout} from '../../redux/features/auth/authSlice';
-import {showToast} from '../../utils/RNToast/ToastMessage';
-import Toast from 'react-native-toast-message';
+import {logout} from '../../redux/features';
+import {showToast} from '../../utils';
+
 const CustomDrawer = (props: any) => {
+  const {navigation} = props;
+  const {user} = useSelector((state: RootState) => state.auth);
+
   const dispatch: AppDispatch = useDispatch();
 
   const handleLogout = async () => {
     dispatch(logout());
     showToast('success', 'logout successful');
-    // ToastAndroid.show('logout success', 1000);
   };
 
   const {
@@ -48,11 +38,6 @@ const CustomDrawer = (props: any) => {
     logoutText,
   } = styles;
 
-  const {navigation} = props;
-
-  const {user} = useSelector((state: RootState) => state.auth);
-  console.log(user);
-  //   console.log(props);
   return (
     <DrawerContentScrollView contentContainerStyle={drawerStyle}>
       <View style={drawerContainer}>
@@ -72,22 +57,29 @@ const CustomDrawer = (props: any) => {
               onPress={() => navigation.navigate('Todos')}
               labelStyle={drawerItem}
               icon={() => (
-                <Octicons name="checklist" size={25} color={'black'} />
+                <MaterialIcons
+                  name="clipboard-list"
+                  size={25}
+                  color={'black'}
+                />
               )}
-              // activeBackgroundColor="blue"
               inactiveTintColor={COLOR.PRIMARY_TEXT}
-
-              // inactiveBackgroundColor={COLOR.PRIMARY_BUTTON_BG}
-              // style={drawerItem}
             />
             <DrawerItem
               label={'Posts'}
               onPress={() => navigation.navigate('Posts')}
               labelStyle={[drawerItem]}
               icon={() => <MaterialIcons name="post" size={28} color="black" />}
-              //   inactiveBackgroundColor={COLOR.PRIMARY_BUTTON_BG}
               inactiveTintColor={COLOR.PRIMARY_TEXT}
-              // style={drawerItem}
+            />
+            <DrawerItem
+              label={'Account'}
+              onPress={() => navigation.navigate('Profile')}
+              labelStyle={[drawerItem]}
+              icon={() => (
+                <MaterialIcons name="account" size={28} color="black" />
+              )}
+              inactiveTintColor={COLOR.PRIMARY_TEXT}
             />
           </View>
           <TouchableOpacity style={logoutContainer} onPress={handleLogout}>
@@ -113,7 +105,6 @@ const styles = StyleSheet.create({
   },
   drawerHeader: {
     height: heightPercentageToDP(25),
-    // backgroundColor: COLOR.PRIMARY_BACKGROUND,
   },
   imageContainer: {
     height: '80%',

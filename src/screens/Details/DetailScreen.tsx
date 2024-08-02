@@ -1,18 +1,25 @@
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {
-  decreaseStock,
   fetchProductsById,
+  decreaseStock,
   increaseStock,
   resetProductState,
-} from '../../redux/features/products/productSlice';
+} from '../../redux/features';
+import {addToCart} from '../../redux/features';
 import IoniIcons from 'react-native-vector-icons/Ionicons';
 import {COLOR} from '../../constants';
 import {SkeletonLoader} from '../../components';
-import {addToCart} from '../../redux/features/cart/cartSlice';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
@@ -20,11 +27,10 @@ import {
 import {AppStackParamList} from '../../types';
 import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
 import ScreenWithBack from '../../components/ScreenWithBackButton/ScreenWithBack';
-import {ToastAndroid} from 'react-native';
 
 type DetailScreenRouteProp = RouteProp<AppStackParamList, 'Details'>;
 
-const DetailScreen: React.FC = ({navigation}: any) => {
+const DetailScreen: React.FC<DetailScreenRouteProp> = ({navigation}: any) => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
 
@@ -62,17 +68,24 @@ const DetailScreen: React.FC = ({navigation}: any) => {
   };
 
   const increaseQuantity = () => {
+    if (quantity === 10) {
+      ToastAndroid.show('limit reached', 1000);
+      return;
+    }
     setQuantity(prev => Math.min(prev + 1, 10));
     dispatch(decreaseStock(quantity));
   };
   const decreaseQuantity = () => {
+    if (quantity === 1) {
+      ToastAndroid.show('atleast 1 product required', 1000);
+      return;
+    }
     setQuantity(prev => Math.max(prev - 1, 1));
     dispatch(increaseStock(quantity));
   };
 
   const {
     detailContainer,
-
     imageContainer,
     image,
     title,

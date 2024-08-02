@@ -8,17 +8,18 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect} from 'react';
-import {AppDispatch, RootState} from '../../redux/store';
+// import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {Banner, HeaderComponent, SkeletonLoader} from '../../components';
 import {COLOR} from '../../constants';
-import {fetchProductsByCategory} from '../../redux/features/products/categorySlice';
+import {fetchProductsByCategory} from '../../redux/features';
 import {ProductType} from '../../types';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
+import {AppDispatch, RootState} from '../../redux';
+import {fetchCurrentUser} from '../../redux/features';
 
 const HomeScreen: React.FC = ({navigation}: any) => {
   const dispatch: AppDispatch = useDispatch();
@@ -40,6 +41,7 @@ const HomeScreen: React.FC = ({navigation}: any) => {
     dispatch(fetchCurrentUser());
   }, [dispatch, user]);
 
+  //categories list to render the data according to category
   const categories = ['smartphones', 'vehicle', 'groceries'];
 
   //individual category item

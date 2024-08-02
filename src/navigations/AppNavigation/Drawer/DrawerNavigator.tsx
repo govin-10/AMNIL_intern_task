@@ -24,7 +24,11 @@ const DrawerNavigator: React.FC = () => {
       />
       <DrawerNav.Screen name="Todos" component={ToDoScreen} />
       <DrawerNav.Screen name="Posts" component={PostScreen} />
-      {/* <DrawerNav.Screen name='Account' component={}/> */}
+      <DrawerNav.Screen
+        name="Account"
+        component={BottomTabNavigator}
+        initialParams={{screen: 'Profile'}}
+      />
     </DrawerNav.Navigator>
   );
 };

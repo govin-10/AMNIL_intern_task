@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
-import {ProductType} from '../../../types';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {ProductType} from '../../../../types';
+import {fetchProductsById} from './productThunk';
 
 interface ProductDetailState {
   product: ProductType | null;
@@ -15,20 +15,6 @@ const initialState: ProductDetailState = {
   loading: false,
   error: null,
 };
-
-export const fetchProductsById = createAsyncThunk(
-  '/fetchProducts/id',
-  async (id: number, {rejectWithValue}) => {
-    try {
-      const products = await api.get(`/products/${id}`);
-
-      return {product: products.data, stock: products.data.stock};
-    } catch (error) {
-      console.log(error);
-      //   return rejectWithValue(error)
-    }
-  },
-);
 
 const productSlice = createSlice({
   name: 'product',

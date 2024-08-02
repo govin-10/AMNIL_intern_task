@@ -13,11 +13,7 @@ import React, {useEffect, useState} from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
-import {
-  clearResults,
-  fetchSearchResults,
-  setQuery,
-} from '../../redux/features/products/searchSlice';
+import {clearResults, fetchSearchResults, setQuery} from '../../redux/features';
 import {COLOR} from '../../constants';
 import {
   widthPercentageToDP as wp,
@@ -25,18 +21,16 @@ import {
 } from 'react-native-responsive-screen';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {SkeletonLoader} from '../../components';
-import {useFocusEffect} from '@react-navigation/native';
 
 const SearchScreen: React.FC = ({navigation}: any) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  // const [searching, setSearching] = useState<boolean>(false);
 
   const {results, loading, error} = useSelector(
     (state: RootState) => state.search,
   );
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
   const dispatch: AppDispatch = useDispatch();
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 800);
 
   useEffect(() => {
     if (debouncedSearchTerm) {

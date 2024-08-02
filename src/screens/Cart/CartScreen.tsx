@@ -8,14 +8,14 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../redux/store';
+import {AppDispatch, RootState} from '../../redux';
 import {HeaderComponent} from '../../components';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {COLOR} from '../../constants';
-import {decreaseCart, increaseCart} from '../../redux/features/cart/cartSlice';
+import {increaseCart, decreaseCart} from '../../redux/features';
 import {Button} from '../../utils';
 
 const CartScreen = ({navigation}: any) => {
@@ -38,6 +38,7 @@ const CartScreen = ({navigation}: any) => {
     updateButton,
     total,
     totalContent,
+    emptyCart,
   } = styles;
 
   return (
@@ -82,7 +83,7 @@ const CartScreen = ({navigation}: any) => {
                 })}
               </>
             ) : (
-              <Text>Nothing in cart for now...</Text>
+              <Text style={emptyCart}>Nothing in cart for now...</Text>
             )}
           </View>
           <View style={total}>
@@ -170,6 +171,11 @@ const styles = StyleSheet.create({
   },
   totalContent: {
     color: COLOR.PRIMARY_TEXT,
+    fontSize: widthPercentageToDP(5),
+  },
+  emptyCart: {
+    color: COLOR.PRIMARY_TEXT,
+    alignSelf: 'center',
     fontSize: widthPercentageToDP(5),
   },
 });

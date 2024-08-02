@@ -12,8 +12,8 @@ import {
 import React, {useEffect, useState} from 'react';
 import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {addPost, getPostsById} from '../../redux/features/post/postSlice';
-import {fetchCurrentUser} from '../../redux/features/auth/authSlice';
+import {addPost, getPostsById} from '../../redux/features';
+import {fetchCurrentUser} from '../../redux/features';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
@@ -26,7 +26,7 @@ const MyPost = () => {
   const {posts, loading, error} = useSelector(
     (state: RootState) => state.mypost,
   );
-  const {user, status} = useSelector((state: RootState) => state.auth);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   const [postTitle, setPostTitle] = useState<string>('');
   const [postBody, setPostBody] = useState<string>('');
@@ -80,7 +80,9 @@ const MyPost = () => {
       ) : (
         <Text>No posts found</Text>
       )}
-      <TouchableOpacity onPress={() => handleAddNewPost()}>
+      <TouchableOpacity
+        onPress={() => handleAddNewPost()}
+        style={styles.modalButton}>
         <Text style={{color: 'white'}}>Add New</Text>
       </TouchableOpacity>
       <Modal
@@ -91,14 +93,12 @@ const MyPost = () => {
           <TextInput
             placeholder="Title"
             placeholderTextColor={'black'}
-            // value={editedTodo}
             onChangeText={setPostTitle}
             style={styles.modalInput}
           />
           <TextInput
             placeholder="Body"
             placeholderTextColor={'black'}
-            // value={editedTodo}
             onChangeText={setPostBody}
             style={styles.modalInput}
             multiline={true}
@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
   myPostContainer: {
     flex: 1,
     padding: widthPercentageToDP(2),
-    // backgroundColor: 'blue',
   },
   modalView: {
     flex: 1,

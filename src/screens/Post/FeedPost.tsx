@@ -1,8 +1,6 @@
 import {
   ScrollView,
   StyleSheet,
-  Text,
-  View,
   RefreshControl,
   FlatList,
   ActivityIndicator,
@@ -10,7 +8,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {AppDispatch, RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchFeedPosts} from '../../redux/features/post/postSlice';
+import {fetchFeedPosts} from '../../redux/features';
 import {PostComponent} from '../../components';
 import {
   heightPercentageToDP,
@@ -42,9 +40,6 @@ const FeedPost = () => {
         <RefreshControl refreshing={refreshing} onRefresh={controlRefresh} />
       }>
       {posts.length > 0 && !refreshing && !loading ? (
-        // posts.map(post => {
-        //   return <Text>{post.title}</Text>;
-        // })
         <FlatList
           data={posts}
           renderItem={({item}) => {

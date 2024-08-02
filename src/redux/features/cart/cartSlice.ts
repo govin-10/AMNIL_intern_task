@@ -1,7 +1,5 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
+import {createSlice} from '@reduxjs/toolkit';
 import {filterData} from '../../../utils/cartDataFilter/cartDataFilter';
-import axios from 'axios';
 
 interface cartState {
   cart: any[];
@@ -9,29 +7,6 @@ interface cartState {
   cartLoading: boolean;
   cartError: string | null;
 }
-
-// export const fetchCartById = createAsyncThunk(
-//   '/fetchCartById',
-//   async (id: number, {rejectWithValue}) => {
-//     try {
-//       const cartsData = await api.get(`/carts/user/${id}`);
-//       if (cartsData.data.carts.products) {
-//         return {
-//           cartProducts: cartsData.data.carts.products,
-//           cartTotal: cartsData.data.carts.total,
-//         };
-//       } else return;
-//     } catch (error) {
-//       if (axios.isAxiosError(error)) {
-//         return rejectWithValue({
-//           message: error.message,
-//           status: error.response?.status || 'Unknown status',
-//         });
-//       }
-//       return rejectWithValue({message: 'An unknown error occurred'});
-//     }
-//   },
-// );
 
 const initialState: cartState = {
   cart: [],
@@ -47,10 +22,13 @@ const cartSlice = createSlice({
     addToCart(state, action) {
       const {product, quantity} = action.payload;
 
+      //product ko sab data bata cart lai chaine data matrai filter gareko
       const cartData = filterData(product, quantity);
 
+      //hamro cart ma selected product chha ki nai, check gareko
       const cartItem = state.cart.find(item => item?.id === cartData.id);
 
+      //chha vane puranai data lai manipulate gareko
       if (cartItem) {
         const oldtotal = cartItem.total;
         cartItem.quantity += cartData.quantity;
@@ -59,20 +37,19 @@ const cartSlice = createSlice({
         state.cartTotalPrice =
           state.cartTotalPrice - oldtotal + cartItem.discountedTotal;
       } else {
+        //chhaina vane matra naya banaako
         state.cart.push(cartData);
         state.cartTotalPrice += cartData.discountedTotal;
       }
     },
     increaseCart(state, action) {
-      // console.log(action.payload);
       const {id, stock, quantity} = action.payload;
       const cartItem = state.cart.find(item => item.id === id);
-      if (cartItem.quantity >= 10) return;
+      if (cartItem.quantity >= 10) return; //10 ota vandaa badi cart ma add garna napaune
       cartItem.stock -= 1;
       cartItem.quantity += 1;
     },
     decreaseCart(state, action) {
-      // console.log(action.payload);
       const {id, stock, quantity} = action.payload;
       const cartItem = state.cart.find(item => item.id === id);
       if (cartItem.quantity === 1) return;
@@ -80,36 +57,6 @@ const cartSlice = createSlice({
       cartItem.quantity -= 1;
     },
   },
-  // extraReducers: builder => {
-  //   builder.addCase(fetchCartById.pending, (state, action) => {
-  //     state.cartLoading = true;
-  //   });
-  //   builder.addCase(fetchCartById.fulfilled, (state, action) => {
-  //     if (action.payload) {
-  //       const {cartProducts, cartTotal} = action.payload;
-  //       state.cart = cartProducts;
-  //       state.cartTotalPrice = cartTotal;
-  //       state.cartLoading = false;
-  //     }
-  //   });
-  //   builder.addCase(fetchCartById.rejected, (state, action) => {
-  //     state.cartError = action.payload as string;
-  //     state.cartLoading = false;
-  //   });
-  //   // builder.addCase(addtoCart.pending, (state, action) => {
-  //   //   state.loading = true;
-  //   // });
-  //   // builder.addCase(addtoCart.fulfilled, (state, action) => {
-  //   //   const {cartProducts, cartTotal} = action.payload;
-  //   //   state.cart = cartProducts;
-  //   //   state.cartTotalPrice = cartTotal;
-  //   //   state.loading = false;
-  //   // });
-  //   // builder.addCase(addtoCart.rejected, (state, action) => {
-  //   //   state.error = action.payload as string;
-  //   //   state.loading = false;
-  //   // });
-  // },
 });
 
 export default cartSlice.reducer;

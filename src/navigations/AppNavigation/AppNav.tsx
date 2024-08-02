@@ -1,4 +1,3 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
 import DrawerNavigator from './Drawer/DrawerNavigator';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -7,7 +6,7 @@ import {AppStackParamList} from '../../types';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
-const AppNav = () => {
+const AppNav: React.FC = () => {
   return (
     <AppStack.Navigator
       screenOptions={{
@@ -20,5 +19,3 @@ const AppNav = () => {
 };
 
 export default AppNav;
-
-const styles = StyleSheet.create({});

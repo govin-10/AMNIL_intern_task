@@ -11,6 +11,7 @@ const AuthStackNavigator: React.FC = () => {
         headerShown: false,
       }}>
       <AuthStackNav.Screen name="Login" component={LoginScreen} />
+      {/* signup page can be added here */}
     </AuthStackNav.Navigator>
   );
 };

@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {api} from '../../../utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {getTodo} from './todoThunk';
 import {todoState} from '../../../types';
 
 const initialState: todoState = {
@@ -11,37 +11,22 @@ const initialState: todoState = {
   nextId: 500,
 };
 
-export const getTodo = createAsyncThunk(
-  '/fetchToDo',
-  async (id: number, {rejectWithValue}) => {
-    try {
-      const todoData = await api.get(`/todos/user/${id}`);
-      //   console.log('tooo', todoData.data);
-      return todoData.data.todos;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-);
-
 const todoSlice = createSlice({
   name: 'todo',
   initialState,
   reducers: {
     removeToDo: (state, action) => {
-      //   console.log(action.payload);
       const todoItem = state.todoList.find(item => item.id === action.payload);
-      //   console.log(todoItem);
+
       const filterItem = state.todoList.filter(
         item => item.id !== action.payload,
       );
-      //   console.log(filterItem);
+
       state.todoList = filterItem;
-      //   (state.todoList = []), (state.loading = false), (state.error = null);
     },
     addToDo: (state, action) => {
       const {todoItem, userId} = action.payload;
-      // console.log(newTodo);
+
       const newTodo = {
         id: state.nextId,
         todo: todoItem,
@@ -63,13 +48,6 @@ const todoSlice = createSlice({
               .includes(state.searchQuery?.toLowerCase()),
           )
         : [...state.todoList];
-
-      // state.searchQuery = action.payload;
-      // state.filteredList = state.searchQuery
-      //   ? state.todoList.filter(item =>
-      //       item.todo.toLowerCase().includes(state.searchQuery.toLowerCase()),
-      //     )
-      //   : [...state.todoList];
     },
     updateToDo: (
       state,

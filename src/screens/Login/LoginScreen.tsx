@@ -8,23 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
-  heightPercentageToDP,
   heightPercentageToDP as hp,
-  widthPercentageToDP,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {COLOR} from '../../constants';
 import Button from '../../utils/Buttons/Button';
 import {IMAGE_PATH} from '../../utils/ImagePaths/ImagePaths';
-import {login} from '../../redux/features/auth/authSlice';
+import {login} from '../../redux/features';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {showToast} from '../../utils/RNToast/ToastMessage';
+import {showToast} from '../../utils';
 
-const LoginScreen = () => {
+const LoginScreen: React.FC = () => {
   const [userName, setUserName] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -32,16 +30,10 @@ const LoginScreen = () => {
   const userNameRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const {user, token, refreshToken, status, error} = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const {status} = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 
   const handlePress = async () => {
-    console.log('button pressed');
-
-    // const credential = {username: userName, password, expiresInMins: 1};
-    // console.log(credential);
     try {
       await dispatch(login({username: userName, password})).unwrap();
       showToast('success', 'login successful', 'Welcome to Amnilite');
@@ -67,7 +59,7 @@ const LoginScreen = () => {
         style={{
           height: 100,
           width: 100,
-          marginVertical: heightPercentageToDP(10),
+          marginVertical: hp(10),
         }}
       />
       <View style={loginBox}>
@@ -105,7 +97,6 @@ const LoginScreen = () => {
                 size={25}
                 color={'blue'}
               />
-              {/* <Text></Text>  */}
             </TouchableOpacity>
           </View>
         </View>

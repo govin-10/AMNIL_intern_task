@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../redux/store';
+import {AppDispatch, RootState} from '../../redux';
 import {
   checkToken,
   fetchCurrentUser,
-} from '../../redux/features/auth/authSlice';
+} from '../../redux/features/auth/authThunks';
 import {SplashScreen} from '../../screens';
 import AuthStackNavigator from '../AuthNavigation/AuthNavigator';
 import AppNav from '../AppNavigation/AppNav';
@@ -23,7 +23,7 @@ const RootStackNav: React.FC = () => {
     const appinitialize = async () => {
       setAppLoading(true); //just making sure apploading is true always when the app reloads.
       await dispatch(checkToken());
-      await dispatch(fetchCurrentUser());
+      await dispatch(fetchCurrentUser()); //current user chai suru mai check garera user ko data user state ma set gareko
       setAppLoading(false);
     };
 
